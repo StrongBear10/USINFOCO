@@ -1,0 +1,430 @@
+/*
+ * style.css
+ *
+ * Estilos para o Gerador de Orçamento CNC Responsivo
+ * Adapta a interface para diferentes tamanhos de tela (desktops, tablets, celulares).
+ */
+
+/* Estilos Globais e Reset Básico */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte moderna e limpa */
+    min-height: 100vh; /* Ocupa no mínimo a altura total da viewport */
+    background-color: #e0e6ed; /* Cor de fundo suave */
+    margin: 0; /* Remove margens padrão do body */
+    padding: 20px; /* Padding geral para o conteúdo em telas maiores */
+    box-sizing: border-box; /* Garante que padding e borda não adicionem largura/altura extra */
+}
+
+/* Contêiner principal que agrupa todo o conteúdo da página */
+.main-wrapper {
+    display: flex; /* Habilita o Flexbox para organização vertical */
+    flex-direction: column; /* Organiza os itens (container e footer) em coluna */
+    align-items: center; /* Centraliza os itens (container e footer) horizontalmente */
+    min-height: 100vh; /* Garante que o wrapper ocupe a altura total da tela */
+    width: 100%; /* Ocupa a largura total disponível */
+}
+
+/* Contêiner principal do aplicativo (onde fica o formulário e a tabela) */
+.container {
+    background-color: #ffffff; /* Fundo branco para o formulário */
+    padding: 30px; /* Espaçamento interno */
+    border-radius: 10px; /* Cantos arredondados */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
+    width: 100%; /* Ocupa a largura total do main-wrapper */
+    max-width: 1000px; /* Largura máxima para desktops */
+    text-align: center; /* Centraliza o texto e elementos em bloco */
+    margin-top: 20px; /* Margem superior para separar do topo da página */
+    margin-bottom: 20px; /* Margem inferior para separar do rodapé */
+}
+
+/* Estilo para o Logo Principal (no topo do app) */
+.logo {
+    max-width: 180px; /* Largura máxima do logo */
+    height: auto; /* Mantém a proporção da imagem */
+    margin-bottom: 30px; /* Espaço abaixo do logo */
+    display: block; /* Garante que as margens automáticas funcionem */
+    margin-left: auto; /* Centraliza o logo horizontalmente */
+    margin-right: auto; /* Centraliza o logo horizontalmente */
+}
+
+/* Títulos H1 (Título principal do app) */
+h1 {
+    color: #2c3e50; /* Cor escura para o título */
+    margin-bottom: 30px;
+    font-size: 2.2em; /* Tamanho da fonte */
+}
+
+/* Títulos H2 (Subtítulos, como "Detalhes das Peças") */
+h2 {
+    color: #34495e;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 1px solid #eee; /* Linha divisória sutil */
+    padding-bottom: 10px;
+}
+
+/* Grupos de Input (Label + Input) */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left; /* Alinha labels e inputs à esquerda */
+}
+
+label {
+    display: block; /* Faz a label ocupar a largura total, colocando o input na linha de baixo */
+    margin-bottom: 8px;
+    color: #34495e;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+/* Estilo para todos os campos de input (número, texto, data) */
+input[type="number"],
+input[type="text"],
+input[type="date"] {
+    width: calc(100% - 22px); /* Largura total menos padding para caber no container */
+    padding: 12px;
+    border: 1px solid #c0d0e0; /* Borda suave */
+    border-radius: 6px; /* Cantos arredondados */
+    font-size: 1em;
+    color: #333;
+    transition: border-color 0.3s ease; /* Transição suave na borda ao focar */
+}
+
+/* Estilo ao focar nos inputs */
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: #007bff; /* Borda azul ao focar */
+    outline: none; /* Remove o outline padrão do navegador */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2); /* Sombra sutil ao focar */
+}
+
+/* Estilos para botões gerais */
+button {
+    padding: 14px 25px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer; /* Cursor de "mãozinha" */
+    font-size: 1.15em;
+    margin-top: 15px; /* Espaçamento padrão entre botões e elementos acima */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transições para hover/active */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para botões */
+    max-width: 300px; /* Limita a largura dos botões em telas maiores */
+    width: 100%; /* Ocupa a largura total disponível até max-width */
+    margin-left: auto; /* Centraliza o botão */
+    margin-right: auto; /* Centraliza o botão */
+    display: block; /* Faz o botão ocupar uma linha inteira e permite margin auto */
+}
+
+/* Estilo específico para o botão "Gerar Orçamento" */
+.secondary-action-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+.secondary-action-button:hover {
+    background-color: #218838; /* Verde mais escuro no hover */
+}
+
+/* Estilo específico para o botão "Exportar para Excel" */
+.export-button {
+    background-color: #17a2b8; /* Azul claro */
+    color: white;
+}
+
+.export-button:hover {
+    background-color: #138496; /* Azul claro mais escuro no hover */
+}
+
+/* Estilo específico para o botão "Adicionar Linha" */
+.add-row-button {
+    background-color: #6c757d; /* Cinza */
+    color: white;
+    max-width: 200px; /* Menor largura para este botão */
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.add-row-button:hover {
+    background-color: #5a6268;
+}
+
+/* Estilo específico para o botão "Remover" de cada linha da tabela */
+.remove-row-button {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    margin: 0; /* Anula margens padrão de botões */
+    width: auto; /* Anula largura 100% dos botões gerais */
+    max-width: none; /* Anula max-width dos botões gerais */
+    display: inline-block; /* Permite que ele fique na linha com o conteúdo da célula */
+}
+
+.remove-row-button:hover {
+    background-color: #c82333;
+}
+
+/* Área de Resultado Total Calculado */
+.resultado-calculo {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee; /* Linha divisória */
+}
+
+.resultado-calculo h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#valorTotalCalculado {
+    font-size: 2.2em; /* Tamanho grande para o valor */
+    color: #007bff; /* Cor azul para destaque */
+    font-weight: bold;
+}
+
+/* Estilos da Tabela de Itens (Container e Tabela em si) */
+.table-container {
+    max-width: 100%;
+    overflow-x: auto; /* ESSENCIAL: Adiciona barra de rolagem horizontal se a tabela for muito larga */
+    margin-bottom: 20px;
+}
+
+#itensTable {
+    width: 100%; /* Ocupa a largura total do table-container */
+    border-collapse: collapse; /* Remove espaçamento entre bordas de células */
+    margin: 20px 0;
+    font-size: 0.9em;
+    min-width: 700px; /* Força uma largura mínima para a tabela, garantindo a rolagem */
+}
+
+#itensTable th, #itensTable td {
+    border: 1px solid #ddd; /* Bordas de células */
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap; /* Impede quebras de linha no conteúdo da célula */
+}
+
+#itensTable th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+
+#itensTable tbody tr:nth-child(even) { /* Estilo para linhas pares (zebra) */
+    background-color: #f9f9f9;
+}
+
+#itensTable tbody tr:hover { /* Efeito de hover nas linhas */
+    background-color: #f1f1f1;
+}
+
+/* Estilos para inputs dentro da tabela */
+#itensTable input[type="number"],
+#itensTable input[type="text"] {
+    width: calc(100% - 10px); /* Ajuste de largura para inputs na tabela */
+    padding: 8px;
+    margin: 0;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Larguras específicas para algumas colunas de input na tabela (desktop) */
+#itensTable td:nth-child(1) input { width: 60px; } /* Quantidade */
+#itensTable td:nth-child(2) input { width: 120px; } /* Peça */
+#itensTable td:nth-child(3) input { width: 80px; } /* Largura */
+#itensTable td:nth-child(4) input { width: 80px; } /* Altura */
+#itensTable td:nth-child(5) input { width: 80px; } /* Tempo Unitário */
+
+/* Estilos para células que exibem valores calculados na tabela */
+#itensTable td:nth-child(6), /* Valor Unitário */
+#itensTable td:nth-child(7), /* Tempo Total */
+#itensTable td:nth-child(8) /* Valor Total */ {
+    font-weight: bold;
+    color: #0056b3; /* Cor azul para destaque */
+    white-space: nowrap; /* Evita quebra de linha em valores monetários/totais */
+}
+
+/* Resumo de Totais (Subtotal Peças, Custo Programação) */
+.total-summary {
+    background-color: #e9f5ff;
+    border: 1px solid #cce5ff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: right; /* Alinha o texto à direita */
+}
+
+.total-summary p {
+    margin: 5px 0;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.total-summary span {
+    font-size: 1.2em;
+    color: #007bff;
+    margin-left: 10px; /* Espaçamento entre o texto e o valor */
+}
+
+/* Estilos para a Seção de Parceria no Rodapé */
+.footer-partnership {
+    text-align: center;
+    margin-top: 0; /* Já existe margin-bottom no container acima */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    width: 100%;
+    max-width: 1000px; /* Mesma largura máxima do container principal */
+    border-radius: 0 0 10px 10px; /* Arredonda só a parte de baixo se o container principal arredonda */
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.05); /* Sombra suave para cima */
+    box-sizing: border-box;
+}
+
+.footer-partnership p {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.gmobile-logo {
+    max-width: 80px; /* Tamanho pequeno para o logo da Gmobile */
+    height: auto;
+    display: block; /* Garante que a margem automática funcione */
+    margin: 0 auto; /* Centraliza o logo horizontalmente */
+}
+
+
+/* ======================================================= */
+/* =================== MEDIA QUERIES ===================== */
+/* ======================================================= */
+
+/*
+ * Estilos aplicados quando a largura da tela é menor ou igual a 768px (tablets e celulares)
+ */
+@media (max-width: 768px) {
+    body {
+        padding: 0; /* Remove o padding do body para dar mais espaço nas bordas da tela */
+    }
+
+    .main-wrapper {
+        padding: 10px; /* Adiciona um padding ao main-wrapper em vez do body */
+    }
+
+    .container, .footer-partnership {
+        padding: 20px 15px; /* Reduz o padding interno dos contêineres para telas menores */
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+    }
+
+    .logo {
+        max-width: 140px; /* Reduz o tamanho do logo principal */
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em; /* Reduz o tamanho do título principal */
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.3em; /* Reduz o tamanho dos subtítulos */
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 0.9em;
+    }
+
+    /* Inputs e botões com padding e fonte ligeiramente menores em telas médias */
+    input[type="number"],
+    input[type="text"],
+    input[type="date"],
+    button {
+        padding: 10px;
+        font-size: 1em;
+    }
+
+    button {
+        max-width: 100%; /* Botões ocupam a largura total em telas pequenas */
+    }
+
+    /* Tabela: Mantém a rolagem horizontal, mas ajusta o padding e fonte */
+    .table-container {
+        /* Margens negativas para o table-container para "esticar" e permitir rolagem */
+        margin: 0 -15px 20px -15px; /* Compensa o padding horizontal do .container (15px) */
+        width: auto; /* Permite que o table-container se ajuste */
+    }
+
+    #itensTable {
+        font-size: 0.85em;
+        margin: 15px 0;
+        min-width: 750px; /* Garante uma largura mínima, forçando a rolagem */
+    }
+
+    #itensTable th, #itensTable td {
+        padding: 8px;
+    }
+
+    #itensTable input[type="number"],
+    #itensTable input[type="text"] {
+        padding: 6px;
+    }
+
+    .remove-row-button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+
+    .total-summary p, .total-summary span {
+        font-size: 1em;
+    }
+
+    #valorTotalCalculado {
+        font-size: 1.8em; /* Reduz o tamanho do total calculado */
+    }
+
+    .gmobile-logo {
+        max-width: 60px; /* Reduz o tamanho do logo da Gmobile */
+    }
+}
+
+/*
+ * Estilos aplicados quando a largura da tela é menor ou igual a 480px (smartphones pequenos)
+ */
+@media (max-width: 480px) {
+    .container, .footer-partnership {
+        padding: 15px 10px; /* Reduz ainda mais o padding horizontal para telas muito pequenas */
+    }
+
+    h1 {
+        font-size: 1.6em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        max-width: 120px;
+    }
+
+    .table-container {
+        margin: 0 -10px 20px -10px; /* Ajusta margens negativas para o novo padding do container (10px) */
+    }
+
+    #itensTable {
+        font-size: 0.8em; /* Fonte ainda menor na tabela */
+        min-width: 650px; /* Mantém uma largura mínima para rolagem em celulares muito pequenos */
+    }
+
+    #itensTable th, #itensTable td {
+        padding: 6px;
+    }
+}

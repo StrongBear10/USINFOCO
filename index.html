@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Orçamento CNC Responsivo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <img src="logo.png" alt="Logo da Empresa" class="logo">
+            <h1>Gerador de Orçamento CNC</h1>
+
+            <div class="input-group">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" id="nomeCliente" placeholder="Nome Completo ou Razão Social">
+            </div>
+
+            <div class="input-group">
+                <label for="dataOrcamento">Data do Orçamento:</label>
+                <input type="date" id="dataOrcamento">
+            </div>
+
+            <div class="input-group">
+                <label for="tempoProgramacao">Tempo de Programação (horas):</label>
+                <input type="number" id="tempoProgramacao" step="0.01" min="0" value="0" placeholder="Ex: 0.5">
+            </div>
+
+            <div class="input-group">
+                <label for="custoHora">Custo da Máquina por Hora (R$):</label>
+                <input type="number" id="custoHora" step="0.01" min="0">
+            </div>
+
+            <h2>Detalhes das Peças</h2>
+            <div class="table-container">
+                <table id="itensTable">
+                    <thead>
+                        <tr>
+                            <th>Qtd.</th>
+                            <th>Peça</th>
+                            <th>Largura (mm)</th>
+                            <th>Altura (mm)</th>
+                            <th>Tempo Unit. (h)</th>
+                            <th>Valor Unit. (R$)</th>
+                            <th>Tempo Total (h)</th>
+                            <th>Valor Total (R$)</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+            <button id="addRowBtn" class="add-row-button">Adicionar Linha</button>
+
+            <div class="total-summary">
+                <p>Subtotal Peças: <span id="subtotalPecas">R$ 0.00</span></p>
+                <p>Custo Programação: <span id="custoProgramacao">R$ 0.00</span></p>
+            </div>
+
+            <div class="resultado-calculo">
+                <h2>Valor Total Calculado:</h2>
+                <p id="valorTotalCalculado">R$ 0.00</p>
+            </div>
+
+            <button id="gerarOrcamentoBtn" class="secondary-action-button">Gerar Orçamento (Nova Janela)</button>
+            <button id="exportExcelBtn" class="export-button">Exportar para Excel</button>
+        </div> <div class="footer-partnership">
+            <p>Parceria com:</p>
+            <img src="gmobile_logo.png" alt="Logo Gmobile" class="gmobile-logo">
+        </div>
+
+    </div> <script src="script.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</body>
+</html>
