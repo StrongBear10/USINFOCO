@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     .popup-gmobile-logo {
-                        max-width: 40px; /* AJUSTADO: Logo da Gmobile menor no pop-up */
+                        max-width: 80px; /* AJUSTADO: Logo da Gmobile menor no pop-up */
                         height: auto;
                         display: block;
                         margin: 10px auto 0;
