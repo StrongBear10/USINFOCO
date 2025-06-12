@@ -378,6 +378,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
 
+<div class="pdf-button-container">
+    <button class="print-pdf-button" onclick="window.print()">Gerar PDF / Imprimir</button>
+</div>
+
+<div class="popup-footer-partnership">
+    <p>Parceria com:</p>
+    <img src="gmobile_logo.png" alt="Logo Gmobile" class="popup-gmobile-logo">
+</div>
+
                 <div class="footer">
                     <p>Este orçamento é válido por 30 dias. <br> Agradecemos a sua consulta! <br> Soli Deo Gloria!</p>
                 </div>
@@ -489,12 +498,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- Inicializar o App --------
     inicializarApp();
 });
-
-<div class="pdf-button-container">
-    <button class="print-pdf-button" onclick="window.print()">Gerar PDF / Imprimir</button>
-</div>
-
-<div class="popup-footer-partnership">
-    <p>Parceria com:</p>
-    <img src="gmobile_logo.png" alt="Logo Gmobile" class="popup-gmobile-logo">
-</div>
