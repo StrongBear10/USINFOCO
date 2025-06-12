@@ -391,7 +391,7 @@ button {
     }
 
     .gmobile-logo {
-        max-width: 50px; /* Reduz ainda mais o logo da Gmobile para telas menores */
+        max-width: 80px; /* Reduz ainda mais o logo da Gmobile para telas menores */
     }
 }
 
