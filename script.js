@@ -489,3 +489,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- Inicializar o App --------
     inicializarApp();
 });
+
+<div class="pdf-button-container">
+    <button class="print-pdf-button" onclick="window.print()">Gerar PDF / Imprimir</button>
+</div>
+
+<div class="popup-footer-partnership">
+    <p>Parceria com:</p>
+    <img src="gmobile_logo.png" alt="Logo Gmobile" class="popup-gmobile-logo">
+</div>
