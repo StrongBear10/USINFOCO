@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
 
                 <div class="footer">
-                    <p>Este orçamento é válido por 30 dias. <br> Agradecemos a sua consulta!</p>
+                    <p>Este orçamento é válido por 30 dias. <br> Agradecemos a sua consulta! <br> Soli Deo Gloria</p>
                 </div>
             </body>
             </html>
@@ -431,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
         dadosPlanilha.push([]);
         dadosPlanilha.push(['Cliente:', nomeCliente]);
         dadosPlanilha.push(['Data do Orçamento:', new Date(dataOrcamento).toLocaleDateString('pt-BR')]);
-        dadosPlanilha.push(['Custo Fixo da Máquina por Hora (R$):', custoHora.toFixed(2).replace('.', ',')]);
-        dadosPlanilha.push(['Tempo de Programação (horas):', tempoProgramacao.toFixed(2).replace('.', ','), 'Custo Programação (R$):', custoProgramacaoValor.toFixed(2).replace('.', ',')]);
+        dadosPlanilha.push(['Custo Fixo da Máquina por Minuto (R$):', custoHora.toFixed(2).replace('.', ',')]);
+        dadosPlanilha.push(['Tempo de Programação (Minutos):', tempoProgramacao.toFixed(2).replace('.', ','), 'Custo Programação (R$):', custoProgramacaoValor.toFixed(2).replace('.', ',')]);
         dadosPlanilha.push([]);
 
         // Cabeçalho da Tabela de Peças
