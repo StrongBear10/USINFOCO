@@ -293,7 +293,7 @@ button {
 }
 
 .gmobile-logo {
-    max-width: 100px; /* Tamanho padrão para o logo da Gmobile (ajustado) */
+    max-width: 80px; /* Tamanho padrão para o logo da Gmobile (ajustado) */
     height: auto;
     display: block; /* Garante que a margem automática funcione */
     margin: 0 auto; /* Centraliza o logo horizontalmente */
