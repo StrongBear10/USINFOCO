@@ -428,3 +428,86 @@ button {
         padding: 6px;
     }
 }
+
+/* ... (estilos existentes no pop-up) ... */
+
+                    .footer {
+                        text-align: center;
+                        margin-top: 40px;
+                        font-size: 0.9em;
+                        color: #777;
+                    }
+
+                    /* --- NOVO: Estilos para o Botão de PDF e o Rodapé da Parceria no Pop-up --- */
+                    .pdf-button-container {
+                        text-align: center;
+                        margin-top: 30px;
+                        margin-bottom: 20px;
+                        padding-top: 15px;
+                        border-top: 1px solid #eee;
+                    }
+
+                    .print-pdf-button {
+                        background-color: #dc3545; /* Vermelho para o botão de PDF */
+                        color: white;
+                        padding: 12px 25px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 1.1em;
+                        transition: background-color 0.3s ease;
+                    }
+
+                    .print-pdf-button:hover {
+                        background-color: #c82333;
+                    }
+
+                    .popup-footer-partnership { /* Estilo para o rodapé de parceria no pop-up */
+                        text-align: center;
+                        margin-top: 30px;
+                        padding-top: 15px;
+                        border-top: 1px dashed #ccc;
+                        font-size: 0.85em;
+                        color: #6c757d;
+                    }
+
+                    .popup-gmobile-logo { /* Estilo para o logo da Gmobile no pop-up */
+                        max-width: 50px; /* Tamanho pequeno para o logo no pop-up */
+                        height: auto;
+                        display: block;
+                        margin: 10px auto 0;
+                    }
+
+                    /* Media Query para o Pop-up (celular) */
+                    @media (max-width: 600px) {
+                        /* ... (estilos existentes para mobile no pop-up) ... */
+                        .print-pdf-button {
+                            padding: 10px 20px;
+                            font-size: 1em;
+                        }
+                        .popup-gmobile-logo {
+                            max-width: 40px; /* Ainda menor no celular */
+                        }
+                    }
+
+                    /* --- NOVO: Estilos para Impressão (ocultam o botão de PDF na versão impressa) --- */
+                    @media print {
+                        .pdf-button-container {
+                            display: none; /* Oculta o botão de PDF ao imprimir */
+                        }
+                        /* Pode adicionar outros estilos aqui para otimizar a impressão,
+                           como remover margens, sombras, etc. */
+                        body {
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .header, .details, .orcamento-table, .summary-section, .footer, .popup-footer-partnership {
+                            box-shadow: none !important;
+                            border: none !important;
+                            background-color: transparent !important;
+                        }
+                        /* Oculta as bordas das células da tabela na impressão se desejar um look mais limpo */
+                        .orcamento-table th, .orcamento-table td {
+                            border: 0.5px solid #ccc !important;
+                        }
+                    }
