@@ -445,8 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Cliente:</strong> ${nomeCliente}</p>
                     <p><strong>Data do Orçamento:</strong> ${dataOrcamentoFormatada}</p>
                     <div class="section-divider"></div>
-                    <p><strong>Custo Fixo da Máquina por Hora:</strong> R$ ${custoHora.toFixed(2).replace('.', ',')}</p>
-                    <p><strong>Tempo de Programação:</strong> ${tempoProgramacao.toFixed(2).replace('.', ',')} horas (Custo: R$ ${custoProgramacaoValor.toFixed(2).replace('.', ',')})</p>
+                    <p><strong>Tempo de Programação:</strong> ${tempoProgramacao.toFixed(2).replace('.', ',')} Minutos (Custo: R$ ${custoProgramacaoValor.toFixed(2).replace('.', ',')})</p>
                     <div class="section-divider"></div>
                     <h2>Detalhes das Peças</h2>
                     ${tabelaHTML}
@@ -461,11 +460,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
 
                 <div class="pdf-button-container">
-                    <button class="print-pdf-button" onclick="window.print()">Gerar PDF / Imprimir</button>
+                    <button class="print-pdf-button" onclick="window.print()">Gerar PDF</button>
                 </div>
 
                 <div class="footer">
-                    <p>Este orçamento é válido por 30 dias. <br> Agradecemos a sua consulta!</p>
+                    <p>Este orçamento é válido por 30 dias. <br> Agradecemos a sua consulta!<br> Soli Deo Gloria!</p>
                 </div>
 
                 <div class="popup-footer-partnership">
