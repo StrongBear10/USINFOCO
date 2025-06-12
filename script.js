@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             font-size: 1em;
                         }
                         .popup-gmobile-logo {
-                            max-width: 30px; /* AJUSTADO: Logo da Gmobile ainda menor em mobile no pop-up */
+                            max-width: 80px; /* AJUSTADO: Logo da Gmobile ainda menor em mobile no pop-up */
                         }
                         .summary-section .total-price {
                             font-size: 1.5em;
