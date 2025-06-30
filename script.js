@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let ultimoPrecoTotalCalculado = 0; // Armazena o último total calculado para uso posterior
 
     // Informações da Empresa (Substitua com seus dados reais)
-    const COMPANY_ADDRESS = "Avenida Santa Tereza, 49 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
+    const COMPANY_ADDRESS = "Avenida Santa Tereza, 273 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
     const COMPANY_CNPJ = "60.305.305/0001-33 / 60.305.305 ADRIANO ALEXANDRE DA SILVA";
     const COMPANY_PIX = "isbran@gmail.com / WhatsApp: (11) 96487-1099 (Geasi) ou (11) 98614-9177 (Adriano)";
 
