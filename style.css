@@ -47,6 +47,25 @@ body {
     margin-right: auto; /* Centraliza o logo horizontalmente */
 }
 
+/* Estilo para as informações da empresa no cabeçalho */
+.company-info {
+    text-align: center; /* Centraliza o texto */
+    margin-bottom: 25px; /* Espaçamento abaixo */
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Linha divisória sutil */
+}
+
+.company-info p {
+    margin: 5px 0; /* Espaçamento entre as linhas de informação */
+    font-size: 0.95em;
+    color: #555;
+}
+
+.company-info strong {
+    color: #333;
+}
+
+
 /* Títulos H1 (Título principal do app) */
 h1 {
     color: #2c3e50; /* Cor escura para o título */
@@ -327,6 +346,15 @@ button {
         margin-bottom: 20px;
     }
 
+    .company-info {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    .company-info p {
+        font-size: 0.9em;
+    }
+
     h1 {
         font-size: 1.8em; /* Reduz o tamanho do título principal */
         margin-bottom: 20px;
@@ -401,6 +429,15 @@ button {
 @media (max-width: 480px) {
     .container, .footer-partnership {
         padding: 15px 10px; /* Reduz ainda mais o padding horizontal para telas muito pequenas */
+    }
+
+    .company-info {
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .company-info p {
+        font-size: 0.85em;
     }
 
     h1 {
