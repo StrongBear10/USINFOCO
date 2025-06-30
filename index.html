@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Orçamento CNC Responsivo</title>
+    <title>USINFOCO</title>
     <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="icon" href="icon.png" type="image/png"> </head>
 <body>
     <div class="main-wrapper">
         <div class="container">
             <img src="logo.png" alt="Logo da Empresa" class="logo">
-            <h1>Gerador de Orçamento CNC</h1>
+            <h1>Ordem de Serviço / Orçamento - Usinagem </h1>
+
+            <div class="company-info">
+                <p><strong>Endereço:</strong> <span id="companyAddress">Seu Endereço, 123 - Sua Cidade, SP</span></p>
+                <p><strong>CNPJ:</strong> <span id="companyCnpj">XX.XXX.XXX/XXXX-XX</span></p>
+                <p><strong>PIX:</strong> <span id="companyPix">suachavepix@email.com ou (xx) xxxxx-xxxx</span></p>
+            </div>
+
+            <div class="input-group">
+                <label for="numeroOrcamento">Número do Orçamento:</label>
+                <input type="text" id="numeroOrcamento" placeholder="Ex: ORC001/2024">
+            </div>
 
             <div class="input-group">
                 <label for="nomeCliente">Nome do Cliente:</label>
