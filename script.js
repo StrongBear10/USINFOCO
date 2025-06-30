@@ -8,6 +8,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Seleção de Elementos HTML
+    const numeroOrcamentoInput = document.getElementById('numeroOrcamento'); // Campo de número do orçamento
     const nomeClienteInput = document.getElementById('nomeCliente');
     const dataOrcamentoInput = document.getElementById('dataOrcamento');
     const tempoProgramacaoInput = document.getElementById('tempoProgramacao');
@@ -25,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const VALOR_CUSTO_FIXO = 3.34;
     let ultimoPrecoTotalCalculado = 0; // Armazena o último total calculado para uso posterior
 
+    // Informações da Empresa (Substitua com seus dados reais)
+    const COMPANY_ADDRESS = "Avenida Santa Tereza, 49 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
+    const COMPANY_CNPJ = "60.305.305/0001-33 / 60.305.305 ADRIANO ALEXANDRE DA SILVA";
+    const COMPANY_PIX = "isbran@gmail.com / WhatsApp: (11) 96487-1099 (Geasi) ou (11) 98614-9177 (Adriano)";
+
+
     // -------- 2. Funções de Inicialização (ao carregar o app) --------
 
     function inicializarApp() {
@@ -34,6 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado (Janeiro = 0)
         const ano = hoje.getFullYear();
         dataOrcamentoInput.value = `${ano}-${mes}-${dia}`; // Formato YYYY-MM-DD para input type="date"
+
+        // Preencher informações da empresa nos spans correspondentes
+        document.getElementById('companyAddress').textContent = COMPANY_ADDRESS;
+        document.getElementById('companyCnpj').textContent = COMPANY_CNPJ;
+        document.getElementById('companyPix').textContent = COMPANY_PIX;
+
 
         // Fixar valor do custo da máquina por hora e tornar o campo não editável
         custoHoraInput.value = VALOR_CUSTO_FIXO.toFixed(2); // Preenche com 2 casas decimais
@@ -173,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- 4. Lógica do Botão "Gerar Orçamento (Nova Janela)" --------
 
     gerarOrcamentoBtn.addEventListener('click', function() {
+        const numeroOrcamento = numeroOrcamentoInput.value.trim(); // Pega o número do orçamento
         const nomeCliente = nomeClienteInput.value.trim();
         const dataOrcamento = dataOrcamentoInput.value;
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
@@ -180,6 +194,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const dadosPecas = obterDadosTabela();
 
         // Validações antes de gerar o orçamento completo
+        if (numeroOrcamento === '') {
+            alert('Por favor, preencha o Número do Orçamento.');
+            numeroOrcamentoInput.focus();
+            return;
+        }
         if (nomeCliente === '') {
             alert('Por favor, preencha o Nome do Cliente antes de gerar o orçamento.');
             nomeClienteInput.focus();
@@ -200,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         atualizarSubtotais(); // Garante que o último cálculo esteja atualizado para o pop-up
-        const precoTotalFinal = ultimoPrecoTotalCalculado;
+        const precoTotalFinal = ultimoPrecoTotalCalculado; // CORREÇÃO AQUI: de ultimoPrecoCalculado para ultimoPrecoTotalCalculado
 
 
         // Formatação da data para exibição no pop-up (correção de fuso horário)
@@ -255,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <html lang="pt-BR">
             <head>
                 <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Orçamento CNC - ${nomeCliente}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Orçamento CNC - ${nomeCliente}</title>
                 <style>
                     body {
                         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -278,6 +298,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         color: #2c3e50;
                         font-size: 1.8em;
                         margin: 0;
+                    }
+                    /* Estilo para as informações da empresa no pop-up */
+                    .company-info-popup {
+                        text-align: center;
+                        margin-bottom: 20px;
+                        font-size: 0.9em;
+                        color: #555;
+                    }
+                    .company-info-popup p {
+                        margin: 3px 0;
+                    }
+                    .company-info-popup strong {
+                        color: #333;
                     }
                     .details p {
                         margin: 5px 0;
@@ -390,6 +423,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         .header img {
                             max-width: 70px; /* AJUSTADO: Logo principal ainda menor em mobile no pop-up */
                         }
+                        /* Ajuste do tamanho da fonte para mobile no pop-up */
+                        .company-info-popup {
+                            font-size: 0.8em;
+                        }
                         .details p {
                             font-size: 1em;
                         }
@@ -441,7 +478,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h1>Orçamento de Usinagem CNC</h1>
                 </div>
 
+                <!-- Informações da empresa no pop-up -->
+                <div class="company-info-popup">
+                    <p><strong>Endereço:</strong> ${COMPANY_ADDRESS}</p>
+                    <p><strong>CNPJ:</strong> ${COMPANY_CNPJ}</p>
+                    <p><strong>PIX:</strong> ${COMPANY_PIX}</p>
+                </div>
+
                 <div class="details">
+                    <!-- Número do Orçamento no pop-up -->
+                    <p><strong>Número do Orçamento:</strong> ${numeroOrcamento}</p>
                     <p><strong>Cliente:</strong> ${nomeCliente}</p>
                     <p><strong>Data do Orçamento:</strong> ${dataOrcamentoFormatada}</p>
                     <div class="section-divider"></div>
@@ -479,6 +525,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (novaJanela) {
             novaJanela.document.write(orcamentoHTML);
             novaJanela.document.close();
+			
+		// Define o título da nova janela ANTES de imprimir
+            // Este título será usado como o nome de arquivo padrão ao salvar como PDF
+            novaJanela.document.title = `USINFOCO_${numeroOrcamento.replace(/[^a-zA-Z0-9]/g, '')}_${nomeCliente.replace(/[^a-zA-Z0-9]/g, '')}`;	
+			
             novaJanela.focus();
         } else {
             alert('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.');
@@ -488,6 +539,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- 5. Lógica do Botão "Exportar para Excel" --------
 
     exportExcelBtn.addEventListener('click', function() {
+        const numeroOrcamento = numeroOrcamentoInput.value.trim(); // Pega o número do orçamento
         const nomeCliente = nomeClienteInput.value.trim();
         const dataOrcamento = dataOrcamentoInput.value;
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
@@ -495,6 +547,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const dadosPecas = obterDadosTabela();
 
         // Validações antes de exportar
+        if (numeroOrcamento === '') {
+            alert('Por favor, preencha o Número do Orçamento antes de exportar.');
+            numeroOrcamentoInput.focus();
+            return;
+        }
         if (nomeCliente === '') {
             alert('Por favor, preencha o Nome do Cliente antes de exportar.');
             nomeClienteInput.focus();
@@ -516,9 +573,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Preparar dados para a planilha
         const dadosPlanilha = [];
 
-        // Cabeçalho Principal
+        // Cabeçalho Principal com informações da empresa e número do orçamento
         dadosPlanilha.push(['ORÇAMENTO DE USINAGEM CNC']);
         dadosPlanilha.push([]);
+        dadosPlanilha.push(['Endereço:', COMPANY_ADDRESS]);
+        dadosPlanilha.push(['CNPJ:', COMPANY_CNPJ]);
+        dadosPlanilha.push(['PIX:', COMPANY_PIX]);
+        dadosPlanilha.push([]); // Espaçamento
+        dadosPlanilha.push(['Número do Orçamento:', numeroOrcamento]);
         dadosPlanilha.push(['Cliente:', nomeCliente]);
         dadosPlanilha.push(['Data do Orçamento:', new Date(dataOrcamento).toLocaleDateString('pt-BR')]);
         dadosPlanilha.push(['Tempo de Programação (Minuto):', tempoProgramacao.toFixed(2).replace('.', ','), 'Custo Programação (R$):', custoProgramacaoValor.toFixed(2).replace('.', ',')]);
