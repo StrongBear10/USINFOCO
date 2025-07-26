@@ -186,6 +186,18 @@ button {
     background-color: #c82333;
 }
 
+/* Novo estilo para o botão "Abrir Calculadora de Tempo" */
+.calculator-button {
+    background-color: #ff8c00; /* Laranja */
+    color: white;
+    margin-top: 20px; /* Adiciona um pouco mais de espaço acima */
+}
+
+.calculator-button:hover {
+    background-color: #e07b00; /* Laranja mais escuro no hover */
+}
+
+
 /* Área de Resultado Total Calculado */
 .resultado-calculo {
     margin-top: 30px;
