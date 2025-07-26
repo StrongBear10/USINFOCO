@@ -21,12 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportExcelBtn = document.getElementById('exportExcelBtn');
     const subtotalPecasDisplay = document.getElementById('subtotalPecas');
     const custoProgramacaoDisplay = document.getElementById('custoProgramacao');
+    // Novo botão da calculadora
+    const abrirCalculadoraBtn = document.getElementById('abrirCalculadoraBtn');
 
     // Variáveis globais/constantes
     const VALOR_CUSTO_FIXO = 3.34;
     let ultimoPrecoTotalCalculado = 0; // Armazena o último total calculado para uso posterior
 
-    // Informações da Empresa (Substitua com seus dados reais)
+    // Informações da Empresa (Substitua com seus seus dados reais)
     const COMPANY_ADDRESS = "Avenida Santa Tereza, 273 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
     const COMPANY_CNPJ = "60.305.305/0001-33 / 60.305.305 ADRIANO ALEXANDRE DA SILVA";
     const COMPANY_PIX = "isbran@gmail.com / WhatsApp: (11) 96487-1099 (Geasi) ou (11) 98614-9177 (Adriano)";
@@ -69,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         tempoProgramacaoInput.addEventListener('input', atualizarSubtotais); // Recalcula ao mudar tempo de programação
 
+        // Listener para o novo botão da calculadora
+        abrirCalculadoraBtn.addEventListener('click', function() {
+            window.open('calculadora.html', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        });
+
+
         // Chama a atualização inicial para garantir que os subtotais e total estejam corretos ao carregar a página
         atualizarSubtotais();
     }
@@ -76,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- 3. Funções de Manipulação da Tabela --------
 
     // Adiciona uma nova linha à tabela com valores iniciais opcionais
-    function adicionarLinhaTabela(quantidade = 0, peca = '', largura = 0, altura = 0, tempoUnitario = 0) {
+    function adicionarLinhaTabela(quantidade = '', peca = '', largura = '', altura = '', tempoUnitario = '') {
         const newRow = itensTableBody.insertRow(); // Insere uma nova linha na tabela
         newRow.innerHTML = `
             <td><input type="number" min="0" value="${quantidade}" class="quantidade-input"></td>
@@ -97,7 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 newRow.remove(); // Remove a linha da tabela
                 atualizarSubtotais(); // Recalcula os totais após a remoção
             } else {
-                alert('É necessário ter pelo menos uma linha na tabela.'); // Mensagem se tentar remover a última linha
+                // Substituído alert() por uma mensagem na interface
+                displayMessage('É necessário ter pelo menos uma linha na tabela.', 'error');
             }
         });
 
@@ -105,6 +114,34 @@ document.addEventListener('DOMContentLoaded', function() {
         atualizarLinhaTabela(newRow);
         atualizarSubtotais(); // Recalcula os totais após a adição
     }
+
+    // Função para exibir mensagens ao usuário (substitui alert())
+    function displayMessage(message, type = 'info') {
+        const messageBox = document.createElement('div');
+        messageBox.textContent = message;
+        messageBox.style.padding = '10px';
+        messageBox.style.margin = '10px 0';
+        messageBox.style.borderRadius = '5px';
+        messageBox.style.textAlign = 'center';
+        messageBox.style.fontWeight = 'bold';
+        messageBox.style.color = 'white';
+
+        if (type === 'error') {
+            messageBox.style.backgroundColor = '#dc3545'; // Vermelho para erro
+        } else {
+            messageBox.style.backgroundColor = '#007bff'; // Azul para informação
+        }
+
+        // Insere a caixa de mensagem antes do primeiro input-group
+        const container = document.querySelector('.container');
+        container.insertBefore(messageBox, container.firstChild);
+
+        // Remove a mensagem após alguns segundos
+        setTimeout(() => {
+            messageBox.remove();
+        }, 5000); // 5 segundos
+    }
+
 
     // Atualiza os campos calculados de uma linha específica da tabela
     function atualizarLinhaTabela(row) {
@@ -132,24 +169,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const dados = [];
         const rows = itensTableBody.querySelectorAll('tr'); // Seleciona todas as linhas do corpo da tabela
         rows.forEach(row => {
-            const quantidade = parseFloat(row.querySelector('.quantidade-input').value) || 0;
+            const quantidade = row.querySelector('.quantidade-input').value.trim(); // Get as string
             const peca = row.querySelector('.peca-input').value.trim();
-            const largura = parseFloat(row.querySelector('.largura-input').value) || 0;
-            const altura = parseFloat(row.querySelector('.altura-input').value) || 0;
-            const tempoUnitario = parseFloat(row.querySelector('.tempo-unitario-input').value) || 0;
+            const largura = row.querySelector('.largura-input').value.trim(); // Get as string
+            const altura = row.querySelector('.altura-input').value.trim(); // Get as string
+            const tempoUnitario = row.querySelector('.tempo-unitario-input').value.trim(); // Get as string
 
-            const valorUnitario = tempoUnitario * VALOR_CUSTO_FIXO;
-            const tempoTotal = quantidade * tempoUnitario;
+            const numericQuantidade = parseFloat(quantidade) || 0;
+            const numericTempoUnitario = parseFloat(tempoUnitario) || 0;
+
+            const valorUnitario = numericTempoUnitario * VALOR_CUSTO_FIXO;
+            const tempoTotal = numericQuantidade * numericTempoUnitario;
             const valorTotal = tempoTotal * VALOR_CUSTO_FIXO;
 
             // Inclui a linha nos dados apenas se tiver alguma informação relevante
-            if (quantidade > 0 || peca !== '' || largura > 0 || altura > 0 || tempoUnitario > 0) {
+            if (numericQuantidade > 0 || peca !== '' || parseFloat(largura) > 0 || parseFloat(altura) > 0 || numericTempoUnitario > 0) {
                 dados.push({
-                    quantidade: quantidade,
+                    quantidade: quantidade, // Keep as string
                     peca: peca,
-                    largura: largura,
-                    altura: altura,
-                    tempoUnitario: tempoUnitario,
+                    largura: largura, // Keep as string
+                    altura: altura, // Keep as string
+                    tempoUnitario: tempoUnitario, // Keep as string
                     valorUnitario: valorUnitario,
                     tempoTotal: tempoTotal,
                     valorTotal: valorTotal
@@ -165,8 +205,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let subtotalPecasValor = 0;
         const dadosPecas = obterDadosTabela(); // Pega os dados atuais da tabela
         dadosPecas.forEach(item => {
-            subtotalPecasTempo += item.tempoTotal;
-            subtotalPecasValor += item.valorTotal;
+            // Use numeric values for calculations
+            subtotalPecasTempo += (parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0);
+            subtotalPecasValor += (parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0) * VALOR_CUSTO_FIXO;
         });
 
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
@@ -195,26 +236,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validações antes de gerar o orçamento completo
         if (numeroOrcamento === '') {
-            alert('Por favor, preencha o Número do Orçamento.');
+            displayMessage('Por favor, preencha o Número do Orçamento.', 'error');
             numeroOrcamentoInput.focus();
             return;
         }
         if (nomeCliente === '') {
-            alert('Por favor, preencha o Nome do Cliente antes de gerar o orçamento.');
+            displayMessage('Por favor, preencha o Nome do Cliente antes de gerar o orçamento.', 'error');
             nomeClienteInput.focus();
             return;
         }
         if (isNaN(tempoProgramacao) || tempoProgramacao < 0) {
-            alert('Por favor, insira um valor válido e positivo para o Tempo de Programação.');
+            displayMessage('Por favor, insira um valor válido e positivo para o Tempo de Programação.', 'error');
             tempoProgramacaoInput.focus();
             return;
         }
         // Validações para a tabela: ao menos uma linha preenchida ou tempo de programação
         const hasValidPecas = dadosPecas.some(item =>
-            (item.quantidade > 0 && item.tempoUnitario > 0) || item.peca !== ''
+            (parseFloat(item.quantidade) > 0 && parseFloat(item.tempoUnitario) > 0) || item.peca !== ''
         );
         if (!hasValidPecas && tempoProgramacao === 0) {
-            alert('Por favor, adicione e preencha pelo menos uma linha válida na tabela de peças OU insira um tempo de programação.');
+            displayMessage('Por favor, adicione e preencha pelo menos uma linha válida na tabela de peças OU insira um tempo de programação.', 'error');
             return;
         }
 
@@ -236,27 +277,35 @@ document.addEventListener('DOMContentLoaded', function() {
                         <th>Peça</th>
                         <th>Largura (mm)</th>
                         <th>Altura (mm)</th>
-                        <th>Tempo Unit. (h)</th>
+                        <th>Tempo Unit. (min)</th>
                         <th>Valor Unit. (R$)</th>
-                        <th>Tempo Total (h)</th>
+                        <th>Tempo Total (min)</th>
                         <th>Valor Total (R$)</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         dadosPecas.forEach(item => {
-            // Inclui apenas linhas com dados relevantes no HTML do orçamento
-            if (item.quantidade > 0 || item.peca !== '' || item.largura > 0 || item.altura > 0 || item.tempoUnitario > 0) {
+            // Include only rows with relevant data in the budget HTML
+            const numericQuantidade = parseFloat(item.quantidade) || 0;
+            const numericLargura = parseFloat(item.largura) || 0;
+            const numericAltura = parseFloat(item.altura) || 0;
+            const numericTempoUnitario = parseFloat(item.tempoUnitario) || 0;
+            const numericTempoTotal = numericQuantidade * numericTempoUnitario;
+            const numericValorTotal = numericTempoTotal * VALOR_CUSTO_FIXO;
+
+
+            if (numericQuantidade > 0 || item.peca !== '' || numericLargura > 0 || numericAltura > 0 || numericTempoUnitario > 0) {
                 tabelaHTML += `
                     <tr>
-                        <td>${item.quantidade.toFixed(2).replace('.', ',')}</td>
+                        <td>${item.quantidade}</td>
                         <td>${item.peca || '-'}</td>
-                        <td>${item.largura.toFixed(2).replace('.', ',')}</td>
-                        <td>${item.altura.toFixed(2).replace('.', ',')}</td>
-                        <td>${item.tempoUnitario.toFixed(2).replace('.', ',')}</td>
+                        <td>${item.largura}</td>
+                        <td>${item.altura}</td>
+                        <td>${item.tempoUnitario}</td>
                         <td>R$ ${item.valorUnitario.toFixed(2).replace('.', ',')}</td>
-                        <td>${item.tempoTotal.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.valorTotal.toFixed(2).replace('.', ',')}</td>
+                        <td>${numericTempoTotal.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${numericValorTotal.toFixed(2).replace('.', ',')}</td>
                     </tr>
                 `;
             }
@@ -478,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h1>Orçamento de Usinagem CNC</h1>
                 </div>
 
-                <!-- Informações da empresa no pop-up -->
                 <div class="company-info-popup">
                     <p><strong>Endereço:</strong> ${COMPANY_ADDRESS}</p>
                     <p><strong>CNPJ:</strong> ${COMPANY_CNPJ}</p>
@@ -486,7 +534,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
 
                 <div class="details">
-                    <!-- Número do Orçamento no pop-up -->
                     <p><strong>Número do Orçamento:</strong> ${numeroOrcamento}</p>
                     <p><strong>Cliente:</strong> ${nomeCliente}</p>
                     <p><strong>Data do Orçamento:</strong> ${dataOrcamentoFormatada}</p>
@@ -532,7 +579,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			
             novaJanela.focus();
         } else {
-            alert('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.');
+            // Substituído alert() por uma mensagem na interface
+            displayMessage('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.', 'error');
         }
     });
 
@@ -548,20 +596,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validações antes de exportar
         if (numeroOrcamento === '') {
-            alert('Por favor, preencha o Número do Orçamento antes de exportar.');
+            displayMessage('Por favor, preencha o Número do Orçamento antes de exportar.', 'error');
             numeroOrcamentoInput.focus();
             return;
         }
         if (nomeCliente === '') {
-            alert('Por favor, preencha o Nome do Cliente antes de exportar.');
+            displayMessage('Por favor, preencha o Nome do Cliente antes de exportar.', 'error');
             nomeClienteInput.focus();
             return;
         }
         const hasValidPecas = dadosPecas.some(item =>
-            (item.quantidade > 0 && item.tempoUnitario > 0) || item.peca !== ''
+            (parseFloat(item.quantidade) > 0 && parseFloat(item.tempoUnitario) > 0) || item.peca !== ''
         );
         if (!hasValidPecas && tempoProgramacao === 0) {
-            alert('Não há dados de peças para exportar. Por favor, preencha a tabela ou o tempo de programação.');
+            displayMessage('Não há dados de peças para exportar. Por favor, preencha a tabela ou o tempo de programação.', 'error');
             return;
         }
 
@@ -589,28 +637,33 @@ document.addEventListener('DOMContentLoaded', function() {
         // Cabeçalho da Tabela de Peças
         dadosPlanilha.push([
             'Qtd.', 'Peça', 'Largura (mm)', 'Altura (mm)',
-            'Tempo Unit. (h)', 'Valor Unit. (R$)', 'Tempo Total (h)', 'Valor Total (R$)'
+            'Tempo Unit. (min)', 'Valor Unit. (R$)', 'Tempo Total (min)', 'Valor Total (R$)'
         ]);
 
         // Dados da Tabela de Peças
         dadosPecas.forEach(item => {
-            if (item.quantidade > 0 || item.peca !== '' || item.largura > 0 || item.altura > 0 || item.tempoUnitario > 0) {
+            const numericQuantidade = parseFloat(item.quantidade) || 0;
+            const numericTempoUnitario = parseFloat(item.tempoUnitario) || 0;
+            const numericTempoTotal = numericQuantidade * numericTempoUnitario;
+            const numericValorTotal = numericTempoTotal * VALOR_CUSTO_FIXO;
+
+            if (numericQuantidade > 0 || item.peca !== '' || parseFloat(item.largura) > 0 || parseFloat(item.altura) > 0 || numericTempoUnitario > 0) {
                 dadosPlanilha.push([
-                    item.quantidade,
+                    item.quantidade, // Keep as string
                     item.peca,
-                    item.largura,
-                    item.altura,
-                    item.tempoUnitario,
+                    item.largura, // Keep as string
+                    item.altura, // Keep as string
+                    item.tempoUnitario, // Keep as string
                     item.valorUnitario,
-                    item.tempoTotal,
-                    item.valorTotal
+                    numericTempoTotal, // This calculation uses numeric values
+                    numericValorTotal // This calculation uses numeric values
                 ]);
             }
         });
         dadosPlanilha.push([]);
 
         // Totais
-        dadosPlanilha.push(['', '', '', '', '', '', 'SUBTOTAL PEÇAS (R$):', dadosPecas.reduce((acc, item) => acc + item.valorTotal, 0)]);
+        dadosPlanilha.push(['', '', '', '', '', '', 'SUBTOTAL PEÇAS (R$):', dadosPecas.reduce((acc, item) => acc + ((parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0) * VALOR_CUSTO_FIXO), 0)]);
         dadosPlanilha.push(['', '', '', '', '', '', 'CUSTO PROGRAMAÇÃO (R$):', custoProgramacaoValor]);
         dadosPlanilha.push(['', '', '', '', '', '', 'VALOR TOTAL GERAL (R$):', precoTotalFinal]);
 
