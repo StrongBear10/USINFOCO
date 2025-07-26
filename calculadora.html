@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soma de Tempo</title>
+    <!-- Inclui Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Cor de fundo suave */
+        }
+        /* Estilo para o contêiner principal */
+        .container {
+            max-width: 600px; /* Limita a largura máxima para desktops */
+            margin: 2rem auto; /* Centraliza o contêiner horizontalmente */
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 1rem; /* Cantos arredondados */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+        /* Estilo para o cabeçalho */
+        h1 {
+            color: #1a202c;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        /* Estilo para o rótulo */
+        label {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        /* Estilo para os campos de entrada de tempo */
+        .time-input {
+            border: 2px solid #cbd5e0;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            transition: border-color 0.2s;
+        }
+        .time-input:focus {
+            outline: none;
+            border-color: #4299e1; /* Cor da borda ao focar */
+        }
+        /* Estilo para o botão principal (Somar Tempos) */
+        .main-button {
+            background-color: #f97316; /* Laranja */
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Cantos mais arredondados */
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3); /* Sombra para o botão */
+        }
+        .main-button:hover {
+            background-color: #ea580c; /* Laranja mais escuro ao passar o mouse */
+            transform: translateY(-2px); /* Efeito de elevação */
+        }
+        .main-button:active {
+            transform: translateY(0); /* Retorna à posição original ao clicar */
+        }
+        /* Estilo para o botão de adicionar linha */
+        .add-row-button {
+            background-color: #10b981; /* Verde */
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        .add-row-button:hover {
+            background-color: #059669; /* Verde mais escuro */
+        }
+        /* Estilo para o resultado */
+        #resultado {
+            background-color: #e2e8f0; /* Fundo cinza claro para o resultado */
+            border: 2px solid #cbd5e0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            text-align: center;
+        }
+        /* Estilo para mensagens de erro */
+        .error-message {
+            color: #e53e3e; /* Vermelho para erros */
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="text-3xl text-center">Calculadora de Soma de Tempo</h1>
+
+        <div class="mb-6">
+            <label class="block text-sm mb-2">Insira os tempos (formato HH:MM:SS ou MM:SS):</label>
+            <div id="timeInputsContainer">
+                <!-- Campos de entrada de tempo serão adicionados aqui via JavaScript -->
+            </div>
+            <button onclick="addTimeInput()" class="add-row-button mt-4">Adicionar Linha</button>
+            <p id="errorMessage" class="error-message hidden">Formato de tempo inválido detectado. Por favor, use HH:MM:SS ou MM:SS.</p>
+        </div>
+
+        <button onclick="somarTempos()" class="main-button w-full mb-6">Somar Tempos</button>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-2 text-center">Resultado:</h2>
+            <div id="resultado" class="py-4">00:00:00</div>
+        </div>
+    </div>
+
+    <script>
+        const timeInputsContainer = document.getElementById('timeInputsContainer');
+        const errorMessageElement = document.getElementById('errorMessage');
+
+        // Função para adicionar um novo campo de entrada de tempo
+        function addTimeInput(initialValue = '') {
+            const inputWrapper = document.createElement('div');
+            // Usando flexbox para alinhar o input e o botão de remover, garantindo responsividade
+            inputWrapper.className = 'flex items-center mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            // w-full garante que o input ocupe a largura total disponível no flex container
+            input.className = 'time-input w-full mr-2';
+            input.placeholder = 'HH:MM:SS ou MM:SS';
+            input.value = initialValue;
+            inputWrapper.appendChild(input);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'text-red-500 hover:text-red-700 font-bold text-xl';
+            removeButton.innerHTML = '&times;'; // Símbolo 'x' para remover
+            removeButton.onclick = () => inputWrapper.remove(); // Remove a linha ao clicar
+            inputWrapper.appendChild(removeButton);
+
+            timeInputsContainer.appendChild(inputWrapper);
+        }
+
+        // Adiciona 3 campos de entrada iniciais ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 0; i < 3; i++) {
+                addTimeInput();
+            }
+        });
+
+        // Função principal para somar os tempos
+        function somarTempos() {
+            const timeInputs = document.querySelectorAll('.time-input');
+            let totalSegundos = 0;
+            let hasError = false;
+
+            // Itera sobre cada campo de entrada de tempo
+            for (const input of timeInputs) {
+                const linha = input.value.trim();
+                if (linha === '') continue; // Ignora campos vazios
+
+                const partes = linha.split(':'); // Divide a linha por ':'
+
+                let segundosLinha = 0;
+                if (partes.length === 3) { // Formato HH:MM:SS
+                    const horas = parseInt(partes[0]);
+                    const minutos = parseInt(partes[1]);
+                    const segundos = parseInt(partes[2]);
+
+                    // Validação para garantir que os valores são números e estão dentro dos limites esperados
+                    if (isNaN(horas) || isNaN(minutos) || isNaN(segundos) || minutos < 0 || minutos >= 60 || segundos < 0 || segundos >= 60) {
+                        hasError = true;
+                        break;
+                    }
+                    segundosLinha = (horas * 3600) + (minutos * 60) + segundos;
+                } else if (partes.length === 2) { // Formato MM:SS
+                    const minutos = parseInt(partes[0]);
+                    const segundos = parseInt(partes[1]);
+
+                    // Validação para garantir que os valores são números e estão dentro dos limites esperados
+                    if (isNaN(minutos) || isNaN(segundos) || minutos < 0 || segundos < 0 || segundos >= 60) {
+                        hasError = true;
+                        break;
+                    }
+                    segundosLinha = (minutos * 60) + segundos;
+                } else { // Formato inválido
+                    hasError = true;
+                    break;
+                }
+                totalSegundos += segundosLinha;
+            }
+
+            if (hasError) {
+                errorMessageElement.classList.remove('hidden'); // Mostra a mensagem de erro
+                document.getElementById('resultado').innerText = 'Erro';
+            } else {
+                errorMessageElement.classList.add('hidden'); // Esconde a mensagem de erro
+                // Converte o total de segundos de volta para HH:MM:SS
+                const horas = Math.floor(totalSegundos / 3600);
+                const minutos = Math.floor((totalSegundos % 3600) / 60);
+                const segundos = totalSegundos % 60;
+
+                // Formata os números para ter sempre dois dígitos (ex: 01, 05)
+                const formatarTempo = (num) => String(num).padStart(2, '0');
+
+                document.getElementById('resultado').innerText =
+                    `${formatarTempo(horas)}:${formatarTempo(minutos)}:${formatarTempo(segundos)}`;
+            }
+        }
+    </script>
+</body>
+</html>
