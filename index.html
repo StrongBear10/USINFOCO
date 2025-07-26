@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USINFOCO</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="icon.png" type="image/png"> </head>
+    <link rel="icon" href="icon.png" type="image/png">
+</head>
 <body>
     <div class="main-wrapper">
         <div class="container">
@@ -52,15 +53,15 @@
                             <th>Peça</th>
                             <th>Largura (mm)</th>
                             <th>Altura (mm)</th>
-                            <th>Tempo Unit. (h)</th>
+                            <th>Tempo Unit. (min)</th>
                             <th>Valor Unit. (R$)</th>
-                            <th>Tempo Total (h)</th>
+                            <th>Tempo Total (min)</th>
                             <th>Valor Total (R$)</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
             <button id="addRowBtn" class="add-row-button">Adicionar Linha</button>
@@ -77,12 +78,15 @@
 
             <button id="gerarOrcamentoBtn" class="secondary-action-button">Gerar Orçamento (Nova Janela)</button>
             <button id="exportExcelBtn" class="export-button">Exportar para Excel</button>
-        </div> <div class="footer-partnership">
+            <button id="abrirCalculadoraBtn" class="calculator-button">Abrir Calculadora de Tempo</button>
+        </div>
+        <div class="footer-partnership">
             <p>Parceria com:</p>
             <img src="gmobile_logo.png" alt="Logo Gmobile" class="gmobile-logo">
         </div>
 
-    </div> <script src="script.js"></script>
+    </div>
+    <script src="script.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>
