@@ -211,10 +211,39 @@ button {
 }
 
 #valorTotalCalculado {
-    font-size: 2.2em; /* Tamanho grande para o valor */
-    color: #007bff; /* Cor azul para destaque */
+    font-size: 1.5em; /* Tamanho reduzido para ser o subtotal */
+    color: #555; /* Cor menos enfática */
     font-weight: bold;
+    display: block; /* Garante que fique em uma linha separada */
 }
+
+/* NOVO ESTILO: Valor do Desconto Aplicado */
+.valor-desconto-aplicado {
+    font-size: 1.2em; 
+    color: #dc3545; /* Vermelho para desconto */
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+#valorDescontoAplicado {
+    color: #dc3545;
+}
+
+/* NOVO ESTILO: Valor Final com Desconto */
+.valor-com-desconto {
+    font-size: 2.2em; /* Tamanho grande para o valor FINAL */
+    color: #28a745; /* Cor verde para destaque do valor final */
+    font-weight: bold;
+    margin-top: 10px; /* Espaço para separação */
+}
+
+#valorTotalComDesconto {
+    color: #28a745; /* Cor do valor final (verde) */
+    font-weight: bold;
+    margin-left: 5px;
+}
+/* FIM NOVO ESTILO: Valor Final com Desconto */
+
 
 /* Estilos da Tabela de Itens (Container e Tabela em si) */
 .table-container {
@@ -427,6 +456,10 @@ button {
     }
 
     #valorTotalCalculado {
+        font-size: 1.5em; /* Tamanho reduzido para ser o subtotal */
+    }
+    
+    .valor-com-desconto {
         font-size: 1.8em; /* Reduz o tamanho do total calculado */
     }
 
@@ -475,6 +508,10 @@ button {
 
     #itensTable th, #itensTable td {
         padding: 6px;
+    }
+
+    .valor-com-desconto {
+        font-size: 1.6em;
     }
 
     .gmobile-logo {
