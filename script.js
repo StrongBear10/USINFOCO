@@ -3,7 +3,7 @@
  *
  * Lógica do Gerador de Orçamento CNC Avançado
  * Inclui manipulação da tabela, cálculos automáticos,
- * geração de orçamento em nova janela e exportação para Excel.
+ * geração de orçamento em nova janela, exportação para Excel e cálculo de desconto em % ou R$.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -13,10 +13,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const dataOrcamentoInput = document.getElementById('dataOrcamento');
     const tempoProgramacaoInput = document.getElementById('tempoProgramacao');
     const custoHoraInput = document.getElementById('custoHora');
+    // NOVO: Campos de Desconto
+    const percentualDescontoInput = document.getElementById('percentualDesconto');
+    const valorDescontoFixoInput = document.getElementById('valorDescontoFixo');
+    
     const itensTableBody = document.querySelector('#itensTable tbody');
     const addRowBtn = document.getElementById('addRowBtn');
     addRowBtn.addEventListener('click', adicionarLinhaTabela); // Listener para o botão "Adicionar Linha"
-    const valorTotalCalculadoDisplay = document.getElementById('valorTotalCalculado');
+    
+    // Displays de Totais
+    const valorTotalCalculadoDisplay = document.getElementById('valorTotalCalculado'); // Valor sem desconto
+    // NOVO: Display do Desconto Aplicado
+    const valorDescontoAplicadoDisplay = document.getElementById('valorDescontoAplicado');
+    // NOVO: Display do Valor Final com Desconto
+    const valorTotalComDescontoDisplay = document.getElementById('valorTotalComDesconto');
+    
     const gerarOrcamentoBtn = document.getElementById('gerarOrcamentoBtn');
     const exportExcelBtn = document.getElementById('exportExcelBtn');
     const subtotalPecasDisplay = document.getElementById('subtotalPecas');
@@ -26,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Variáveis globais/constantes
     const VALOR_CUSTO_FIXO = 3.34;
-    let ultimoPrecoTotalCalculado = 0; // Armazena o último total calculado para uso posterior
+    let ultimoPrecoTotalCalculado = 0; // Armazena o último total ANTES do desconto
+    let ultimoPrecoFinalComDesconto = 0; // Armazena o último total DEPOIS do desconto
+    let ultimoValorDesconto = 0; // Armazena o valor do desconto aplicado (em R$)
 
     // Informações da Empresa (Substitua com seus seus dados reais)
     const COMPANY_ADDRESS = "Avenida Santa Tereza, 273 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
@@ -61,8 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             adicionarLinhaTabela();
         }
 
-        // Adicionar ouvintes de evento para inputs numéricos da tabela e tempo de programação
-        // Isso permite o cálculo automático do valor total em tempo real
+        // Adicionar ouvintes de evento para inputs numéricos da tabela, tempo de programação E DESCONTOS
         itensTableBody.addEventListener('input', function(event) {
             if (event.target.closest('.quantidade-input') || event.target.closest('.tempo-unitario-input')) {
                 atualizarLinhaTabela(event.target.closest('tr')); // Atualiza cálculos da linha
@@ -70,6 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         tempoProgramacaoInput.addEventListener('input', atualizarSubtotais); // Recalcula ao mudar tempo de programação
+        
+        // NOVO LISTENER: Recalcula e gerencia os campos de desconto
+        percentualDescontoInput.addEventListener('input', function() {
+            if (parseFloat(this.value) > 0) {
+                valorDescontoFixoInput.value = '0.00'; // Zera o outro campo ao digitar aqui
+            }
+            atualizarSubtotais();
+        });
+
+        valorDescontoFixoInput.addEventListener('input', function() {
+            if (parseFloat(this.value) > 0) {
+                percentualDescontoInput.value = '0'; // Zera o outro campo ao digitar aqui
+            }
+            atualizarSubtotais();
+        });
+
 
         // Listener para o novo botão da calculadora
         abrirCalculadoraBtn.addEventListener('click', function() {
@@ -81,7 +109,34 @@ document.addEventListener('DOMContentLoaded', function() {
         atualizarSubtotais();
     }
 
-    // -------- 3. Funções de Manipulação da Tabela --------
+    // Função para exibir mensagens ao usuário (substitui alert())
+    function displayMessage(message, type = 'info') {
+        const messageBox = document.createElement('div');
+        messageBox.textContent = message;
+        messageBox.style.padding = '10px';
+        messageBox.style.margin = '10px 0';
+        messageBox.style.borderRadius = '5px';
+        messageBox.style.textAlign = 'center';
+        messageBox.style.fontWeight = 'bold';
+        messageBox.style.color = 'white';
+
+        if (type === 'error') {
+            messageBox.style.backgroundColor = '#dc3545'; // Vermelho para erro
+        } else {
+            messageBox.style.backgroundColor = '#007bff'; // Azul para informação
+        }
+
+        // Insere a caixa de mensagem antes do primeiro input-group
+        const container = document.querySelector('.container');
+        const firstInputGroup = document.querySelector('.container').firstChild; // Pega o primeiro elemento
+        container.insertBefore(messageBox, firstInputGroup.nextSibling);
+
+        // Remove a mensagem após alguns segundos
+        setTimeout(() => {
+            messageBox.remove();
+        }, 5000); // 5 segundos
+    }
+
 
     // Adiciona uma nova linha à tabela com valores iniciais opcionais
     function adicionarLinhaTabela(quantidade = '', peca = '', largura = '', altura = '', tempoUnitario = '') {
@@ -113,33 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Atualiza os valores calculados da linha recém-adicionada
         atualizarLinhaTabela(newRow);
         atualizarSubtotais(); // Recalcula os totais após a adição
-    }
-
-    // Função para exibir mensagens ao usuário (substitui alert())
-    function displayMessage(message, type = 'info') {
-        const messageBox = document.createElement('div');
-        messageBox.textContent = message;
-        messageBox.style.padding = '10px';
-        messageBox.style.margin = '10px 0';
-        messageBox.style.borderRadius = '5px';
-        messageBox.style.textAlign = 'center';
-        messageBox.style.fontWeight = 'bold';
-        messageBox.style.color = 'white';
-
-        if (type === 'error') {
-            messageBox.style.backgroundColor = '#dc3545'; // Vermelho para erro
-        } else {
-            messageBox.style.backgroundColor = '#007bff'; // Azul para informação
-        }
-
-        // Insere a caixa de mensagem antes do primeiro input-group
-        const container = document.querySelector('.container');
-        container.insertBefore(messageBox, container.firstChild);
-
-        // Remove a mensagem após alguns segundos
-        setTimeout(() => {
-            messageBox.remove();
-        }, 5000); // 5 segundos
     }
 
 
@@ -217,35 +245,82 @@ document.addEventListener('DOMContentLoaded', function() {
         subtotalPecasDisplay.textContent = `R$ ${subtotalPecasValor.toFixed(2).replace('.', ',')}`;
         custoProgramacaoDisplay.textContent = `R$ ${custoProgramacaoValor.toFixed(2).replace('.', ',')}`;
 
-        // Calcula e atualiza o valor total geral
+        // Calcula o valor total geral (SEM DESCONTO)
         const valorGeralTotal = subtotalPecasValor + custoProgramacaoValor;
         ultimoPrecoTotalCalculado = valorGeralTotal; // Armazena para uso no pop-up/exportação
-        valorTotalCalculadoDisplay.textContent = `R$ ${valorGeralTotal.toFixed(2).replace('.', ',')}`; // Atualiza o display do valor total
-        valorTotalCalculadoDisplay.style.color = '#007bff'; // Define a cor para azul
+        valorTotalCalculadoDisplay.textContent = `R$ ${valorGeralTotal.toFixed(2).replace('.', ',')}`; // Atualiza o display do valor total (subtotal)
+
+        // Lógica de Desconto Híbrido:
+        let valorDesconto = 0;
+        let percentualDesconto = parseFloat(percentualDescontoInput.value) || 0;
+        let valorDescontoFixo = parseFloat(valorDescontoFixoInput.value) || 0;
+
+        // 1. Validação/Escolha do Desconto
+        if (valorDescontoFixo > 0 && percentualDesconto > 0) {
+            // Se ambos forem preenchidos, prioriza um e zera o outro no display para evitar confusão.
+            // Aqui, priorizamos o valor fixo.
+            percentualDescontoInput.value = '0';
+            percentualDesconto = 0;
+            displayMessage('Apenas um tipo de desconto (percentual ou fixo) pode ser aplicado. O desconto em R$ foi mantido.', 'info');
+        } 
+        
+        if (valorDescontoFixo > 0) {
+            // Desconto em R$
+            valorDesconto = Math.min(valorDescontoFixo, valorGeralTotal); // Garante que o desconto não exceda o total
+            percentualDesconto = (valorDesconto / valorGeralTotal) * 100; // Calcula o % para exibição no pop-up
+        } else if (percentualDesconto > 0) {
+            // Desconto em %
+            percentualDesconto = Math.min(percentualDesconto, 100); // Garante que o % não exceda 100
+            percentualDescontoInput.value = percentualDesconto; 
+            valorDesconto = valorGeralTotal * (percentualDesconto / 100); // Calcula o valor do desconto
+            valorDescontoFixoInput.value = valorDesconto.toFixed(2); // Atualiza o campo R$ com o valor calculado (apenas visual)
+        } else {
+            valorDescontoFixoInput.value = '0.00';
+        }
+
+        const valorFinalComDesconto = valorGeralTotal - valorDesconto;
+        
+        ultimoValorDesconto = valorDesconto; // Armazena o valor do desconto em R$
+        ultimoPrecoFinalComDesconto = valorFinalComDesconto; // Armazena o valor final
+
+        // Atualiza o display do desconto aplicado e do valor final com desconto
+        valorDescontoAplicadoDisplay.textContent = `R$ ${valorDesconto.toFixed(2).replace('.', ',')}`;
+        valorTotalComDescontoDisplay.textContent = `R$ ${valorFinalComDesconto.toFixed(2).replace('.', ',')}`;
     }
 
     // -------- 4. Lógica do Botão "Gerar Orçamento (Nova Janela)" --------
 
     gerarOrcamentoBtn.addEventListener('click', function() {
+        // CORREÇÃO ESSENCIAL: Abrir a janela imediatamente para burlar o bloqueador
+        const novaJanela = window.open('', '_blank', 'width=900,height=700,scrollbars=yes,resizable=yes');
+        if (!novaJanela) {
+            displayMessage('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.', 'error');
+            return;
+        }
+
         const numeroOrcamento = numeroOrcamentoInput.value.trim(); // Pega o número do orçamento
         const nomeCliente = nomeClienteInput.value.trim();
         const dataOrcamento = dataOrcamentoInput.value;
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
         const custoHora = VALOR_CUSTO_FIXO;
         const dadosPecas = obterDadosTabela();
+        atualizarSubtotais(); // Garante que o último cálculo esteja atualizado
 
         // Validações antes de gerar o orçamento completo
         if (numeroOrcamento === '') {
+            novaJanela.close(); // Fecha a janela aberta se a validação falhar
             displayMessage('Por favor, preencha o Número do Orçamento.', 'error');
             numeroOrcamentoInput.focus();
             return;
         }
         if (nomeCliente === '') {
+            novaJanela.close();
             displayMessage('Por favor, preencha o Nome do Cliente antes de gerar o orçamento.', 'error');
             nomeClienteInput.focus();
             return;
         }
         if (isNaN(tempoProgramacao) || tempoProgramacao < 0) {
+            novaJanela.close();
             displayMessage('Por favor, insira um valor válido e positivo para o Tempo de Programação.', 'error');
             tempoProgramacaoInput.focus();
             return;
@@ -255,12 +330,18 @@ document.addEventListener('DOMContentLoaded', function() {
             (parseFloat(item.quantidade) > 0 && parseFloat(item.tempoUnitario) > 0) || item.peca !== ''
         );
         if (!hasValidPecas && tempoProgramacao === 0) {
+            novaJanela.close();
             displayMessage('Por favor, adicione e preencha pelo menos uma linha válida na tabela de peças OU insira um tempo de programação.', 'error');
             return;
         }
 
-        atualizarSubtotais(); // Garante que o último cálculo esteja atualizado para o pop-up
-        const precoTotalFinal = ultimoPrecoTotalCalculado; // CORREÇÃO AQUI: de ultimoPrecoCalculado para ultimoPrecoTotalCalculado
+        // Variáveis de Totais Globais
+        const precoTotalSemDesconto = ultimoPrecoTotalCalculado;
+        const precoTotalFinal = ultimoPrecoFinalComDesconto; 
+        const valorDesconto = ultimoValorDesconto;
+        const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
+        // Pega o percentual real aplicado (calculado no atualizarSubtotais)
+        const percentualDescontoAplicado = (valorDesconto / precoTotalSemDesconto) * 100;
 
 
         // Formatação da data para exibição no pop-up (correção de fuso horário)
@@ -314,8 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </tbody>
             </table>
         `;
-
-        const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
 
         // Conteúdo HTML da nova janela (com estilos responsivos embutidos)
         const orcamentoHTML = `
@@ -405,6 +484,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     .summary-section p {
                         margin: 5px 0;
                         font-weight: bold;
+                        font-size: 1.1em;
+                    }
+                    .summary-section .total-no-discount {
+                         color: #555;
+                         font-size: 1em;
+                    }
+                    .summary-section .discount-amount {
+                        color: #dc3545; /* Vermelho para desconto */
                     }
                     .summary-section .total-price {
                         font-size: 1.8em;
@@ -547,8 +634,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="summary-section">
                     <p><strong>Subtotal Peças:</strong> R$ ${dadosPecas.reduce((acc, item) => acc + item.valorTotal, 0).toFixed(2).replace('.', ',')}</p>
                     <p><strong>Custo de Programação:</strong> R$ ${custoProgramacaoValor.toFixed(2).replace('.', ',')}</p>
+                    <p class="total-no-discount"><strong>Total Sem Desconto:</strong> R$ ${precoTotalSemDesconto.toFixed(2).replace('.', ',')}</p>
+                    <p class="discount-amount"><strong>Desconto (${percentualDescontoAplicado.toFixed(2).replace('.', ',')}%) em R$:</strong> R$ ${valorDesconto.toFixed(2).replace('.', ',')}</p>
                     <div class="total-price">
-                        Valor Total: R$ ${precoTotalFinal.toFixed(2).replace('.', ',')}
+                        Valor Total Final: R$ ${precoTotalFinal.toFixed(2).replace('.', ',')}
                     </div>
                 </div>
 
@@ -568,20 +657,15 @@ document.addEventListener('DOMContentLoaded', function() {
             </html>
         `;
 
-        const novaJanela = window.open('', '_blank', 'width=900,height=700,scrollbars=yes,resizable=yes');
-        if (novaJanela) {
-            novaJanela.document.write(orcamentoHTML);
-            novaJanela.document.close();
+        // Escreve o conteúdo na janela aberta (isso só funciona se o window.open não foi bloqueado)
+        novaJanela.document.write(orcamentoHTML);
+        novaJanela.document.close();
 			
 		// Define o título da nova janela ANTES de imprimir
-            // Este título será usado como o nome de arquivo padrão ao salvar como PDF
-            novaJanela.document.title = `USINFOCO_${numeroOrcamento.replace(/[^a-zA-Z0-9]/g, '')}_${nomeCliente.replace(/[^a-zA-Z0-9]/g, '')}`;	
+        // Este título será usado como o nome de arquivo padrão ao salvar como PDF
+        novaJanela.document.title = `USINFOCO_${numeroOrcamento.replace(/[^a-zA-Z0-9]/g, '')}_${nomeCliente.replace(/[^a-zA-Z0-9]/g, '')}`;	
 			
-            novaJanela.focus();
-        } else {
-            // Substituído alert() por uma mensagem na interface
-            displayMessage('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.', 'error');
-        }
+        novaJanela.focus();
     });
 
     // -------- 5. Lógica do Botão "Exportar para Excel" --------
@@ -614,8 +698,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         atualizarSubtotais();
-        const precoTotalFinal = ultimoPrecoTotalCalculado;
+        // Variáveis de Totais Globais
+        const precoTotalSemDesconto = ultimoPrecoTotalCalculado;
+        const precoTotalFinal = ultimoPrecoFinalComDesconto; 
+        const valorDesconto = ultimoValorDesconto;
         const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
+        // Pega o percentual real aplicado
+        const percentualDescontoAplicado = (valorDesconto / precoTotalSemDesconto) * 100;
 
 
         // Preparar dados para a planilha
@@ -665,7 +754,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Totais
         dadosPlanilha.push(['', '', '', '', '', '', 'SUBTOTAL PEÇAS (R$):', dadosPecas.reduce((acc, item) => acc + ((parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0) * VALOR_CUSTO_FIXO), 0)]);
         dadosPlanilha.push(['', '', '', '', '', '', 'CUSTO PROGRAMAÇÃO (R$):', custoProgramacaoValor]);
-        dadosPlanilha.push(['', '', '', '', '', '', 'VALOR TOTAL GERAL (R$):', precoTotalFinal]);
+        dadosPlanilha.push(['', '', '', '', '', '', 'TOTAL SEM DESCONTO (R$):', precoTotalSemDesconto]);
+        dadosPlanilha.push(['', '', '', '', '', '', `DESCONTO (${percentualDescontoAplicado.toFixed(2).replace('.', ',')}%) (R$):`, valorDesconto]);
+        dadosPlanilha.push(['', '', '', '', '', '', 'VALOR TOTAL FINAL (R$):', precoTotalFinal]);
 
 
         // Criação da planilha e pasta de trabalho
