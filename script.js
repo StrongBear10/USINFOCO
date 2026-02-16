@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Informações da Empresa (Substitua com seus seus dados reais)
     const COMPANY_ADDRESS = "Avenida Santa Tereza, 273 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
     const COMPANY_CNPJ = "60.305.305/0001-33 / 60.305.305 ADRIANO ALEXANDRE DA SILVA";
-    const COMPANY_PIX = "isbran@gmail.com / WhatsApp: (11) 96487-1099 (Geasi) ou (11) 98614-9177 (Adriano)";
+    const COMPANY_PIX = "60305305000133 (CNPJ) / WhatsApp: (11) 96487-1099 (Geasi) ou (11) 98614-9177 (Adriano)";
 
 
     // -------- 2. Funções de Inicialização (ao carregar o app) --------
@@ -784,3 +784,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- Inicializar o App --------
     inicializarApp();
 });
+
