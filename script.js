@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dataOrcamentoInput = document.getElementById('dataOrcamento');
     const tempoProgramacaoInput = document.getElementById('tempoProgramacao');
     const custoHoraInput = document.getElementById('custoHora');
-    // NOVO: Campos de Desconto
+    // Campos de Desconto
     const percentualDescontoInput = document.getElementById('percentualDesconto');
     const valorDescontoFixoInput = document.getElementById('valorDescontoFixo');
     
@@ -23,10 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Displays de Totais
     const valorTotalCalculadoDisplay = document.getElementById('valorTotalCalculado'); // Valor sem desconto
-    // NOVO: Display do Desconto Aplicado
     const valorDescontoAplicadoDisplay = document.getElementById('valorDescontoAplicado');
-    // NOVO: Display do Valor Final com Desconto
     const valorTotalComDescontoDisplay = document.getElementById('valorTotalComDesconto');
+    const totalQuantidadeDisplay = document.getElementById('totalQuantidade'); // Total de quantidades no rodapé da tabela
     
     const gerarOrcamentoBtn = document.getElementById('gerarOrcamentoBtn');
     const exportExcelBtn = document.getElementById('exportExcelBtn');
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let ultimoPrecoFinalComDesconto = 0; // Armazena o último total DEPOIS do desconto
     let ultimoValorDesconto = 0; // Armazena o valor do desconto aplicado (em R$)
 
-    // Informações da Empresa (Substitua com seus seus dados reais)
+    // Informações da Empresa
     const COMPANY_ADDRESS = "Avenida Santa Tereza, 273 - Bairro Jd. Santa Tereza, Rio Grande da Serra, SP - CEP: 09450-000";
     const COMPANY_CNPJ = "60.305.305/0001-33 / 60.305.305 ADRIANO ALEXANDRE DA SILVA";
     const COMPANY_PIX = "(CNPJ) 60305305000133 / WhatsApp: (11) 95670-0617 (Adriano) ou (11) 96487-1099 (Geasi)";
@@ -83,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         tempoProgramacaoInput.addEventListener('input', atualizarSubtotais); // Recalcula ao mudar tempo de programação
         
-        // NOVO LISTENER: Recalcula e gerencia os campos de desconto
+        // Recalcula e gerencia os campos de desconto
         percentualDescontoInput.addEventListener('input', function() {
             if (parseFloat(this.value) > 0) {
                 valorDescontoFixoInput.value = '0.00'; // Zera o outro campo ao digitar aqui
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         atualizarSubtotais();
     }
 
-    // Função para exibir mensagens ao usuário (substitui alert())
+    // Função para exibir mensagens ao usuário
     function displayMessage(message, type = 'info') {
         const messageBox = document.createElement('div');
         messageBox.textContent = message;
@@ -126,21 +125,19 @@ document.addEventListener('DOMContentLoaded', function() {
             messageBox.style.backgroundColor = '#007bff'; // Azul para informação
         }
 
-        // Insere a caixa de mensagem antes do primeiro input-group
         const container = document.querySelector('.container');
-        const firstInputGroup = document.querySelector('.container').firstChild; // Pega o primeiro elemento
+        const firstInputGroup = document.querySelector('.container').firstChild;
         container.insertBefore(messageBox, firstInputGroup.nextSibling);
 
-        // Remove a mensagem após alguns segundos
         setTimeout(() => {
             messageBox.remove();
-        }, 5000); // 5 segundos
+        }, 5000);
     }
 
 
     // Adiciona uma nova linha à tabela com valores iniciais opcionais
     function adicionarLinhaTabela(quantidade = '', peca = '', largura = '', altura = '', tempoUnitario = '') {
-        const newRow = itensTableBody.insertRow(); // Insere uma nova linha na tabela
+        const newRow = itensTableBody.insertRow();
         newRow.innerHTML = `
             <td><input type="number" min="0" value="${quantidade}" class="quantidade-input"></td>
             <td><input type="text" value="${peca}" class="peca-input" placeholder="Nome da Peça"></td>
@@ -153,21 +150,18 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><button class="remove-row-button">Remover</button></td>
         `;
 
-        // Adiciona um ouvinte de evento para o botão "Remover" de cada nova linha
         const removeButton = newRow.querySelector('.remove-row-button');
         removeButton.addEventListener('click', function() {
-            if (itensTableBody.rows.length > 1) { // Permite remover a linha se houver mais de uma
-                newRow.remove(); // Remove a linha da tabela
-                atualizarSubtotais(); // Recalcula os totais após a remoção
+            if (itensTableBody.rows.length > 1) {
+                newRow.remove();
+                atualizarSubtotais();
             } else {
-                // Substituído alert() por uma mensagem na interface
                 displayMessage('É necessário ter pelo menos uma linha na tabela.', 'error');
             }
         });
 
-        // Atualiza os valores calculados da linha recém-adicionada
         atualizarLinhaTabela(newRow);
-        atualizarSubtotais(); // Recalcula os totais após a adição
+        atualizarSubtotais();
     }
 
 
@@ -179,14 +173,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const tempoTotalCell = row.querySelector('.tempo-total');
         const valorTotalCell = row.querySelector('.valor-total');
 
-        const quantidade = parseFloat(quantidadeInput.value) || 0; // Converte para float, ou 0 se inválido
+        const quantidade = parseFloat(quantidadeInput.value) || 0;
         const tempoUnitario = parseFloat(tempoUnitarioInput.value) || 0;
 
-        const valorUnitario = tempoUnitario * VALOR_CUSTO_FIXO; // Custo unitário da peça
-        const tempoTotal = quantidade * tempoUnitario; // Tempo total para a quantidade de peças
-        const valorTotal = tempoTotal * VALOR_CUSTO_FIXO; // Valor total para a quantidade de peças
+        const valorUnitario = tempoUnitario * VALOR_CUSTO_FIXO;
+        const tempoTotal = quantidade * tempoUnitario;
+        const valorTotal = tempoTotal * VALOR_CUSTO_FIXO;
 
-        // Atualiza o texto nas células de resultado da linha
         valorUnitarioCell.textContent = `R$ ${valorUnitario.toFixed(2).replace('.', ',')}`;
         tempoTotalCell.textContent = tempoTotal.toFixed(2).replace('.', ',');
         valorTotalCell.textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
@@ -195,13 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obtém todos os dados das linhas da tabela
     function obterDadosTabela() {
         const dados = [];
-        const rows = itensTableBody.querySelectorAll('tr'); // Seleciona todas as linhas do corpo da tabela
+        const rows = itensTableBody.querySelectorAll('tr');
         rows.forEach(row => {
-            const quantidade = row.querySelector('.quantidade-input').value.trim(); // Get as string
+            const quantidade = row.querySelector('.quantidade-input').value.trim();
             const peca = row.querySelector('.peca-input').value.trim();
-            const largura = row.querySelector('.largura-input').value.trim(); // Get as string
-            const altura = row.querySelector('.altura-input').value.trim(); // Get as string
-            const tempoUnitario = row.querySelector('.tempo-unitario-input').value.trim(); // Get as string
+            const largura = row.querySelector('.largura-input').value.trim();
+            const altura = row.querySelector('.altura-input').value.trim();
+            const tempoUnitario = row.querySelector('.tempo-unitario-input').value.trim();
 
             const numericQuantidade = parseFloat(quantidade) || 0;
             const numericTempoUnitario = parseFloat(tempoUnitario) || 0;
@@ -210,14 +203,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const tempoTotal = numericQuantidade * numericTempoUnitario;
             const valorTotal = tempoTotal * VALOR_CUSTO_FIXO;
 
-            // Inclui a linha nos dados apenas se tiver alguma informação relevante
             if (numericQuantidade > 0 || peca !== '' || parseFloat(largura) > 0 || parseFloat(altura) > 0 || numericTempoUnitario > 0) {
                 dados.push({
-                    quantidade: quantidade, // Keep as string
+                    quantidade: quantidade,
                     peca: peca,
-                    largura: largura, // Keep as string
-                    altura: altura, // Keep as string
-                    tempoUnitario: tempoUnitario, // Keep as string
+                    largura: largura,
+                    altura: altura,
+                    tempoUnitario: tempoUnitario,
                     valorUnitario: valorUnitario,
                     tempoTotal: tempoTotal,
                     valorTotal: valorTotal
@@ -227,63 +219,65 @@ document.addEventListener('DOMContentLoaded', function() {
         return dados;
     }
 
-    // Atualiza os subtotais da seção de resumo e o valor total geral
+    // Atualiza os subtotais da seção de resumo, total de quantidades e o valor total geral
     function atualizarSubtotais() {
         let subtotalPecasTempo = 0;
         let subtotalPecasValor = 0;
-        const dadosPecas = obterDadosTabela(); // Pega os dados atuais da tabela
+        let totalQuantidadePecas = 0;
+
+        const dadosPecas = obterDadosTabela();
         dadosPecas.forEach(item => {
-            // Use numeric values for calculations
-            subtotalPecasTempo += (parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0);
-            subtotalPecasValor += (parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0) * VALOR_CUSTO_FIXO;
+            const qtd = parseFloat(item.quantidade) || 0;
+            const tempoUnit = parseFloat(item.tempoUnitario) || 0;
+
+            totalQuantidadePecas += qtd;
+            subtotalPecasTempo += qtd * tempoUnit;
+            subtotalPecasValor += qtd * tempoUnit * VALOR_CUSTO_FIXO;
         });
+
+        // Atualiza a soma total das quantidades no tfoot da tabela
+        if (totalQuantidadeDisplay) {
+            totalQuantidadeDisplay.textContent = totalQuantidadePecas;
+        }
 
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
         const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
 
-        // Atualiza os displays de subtotal na interface
         subtotalPecasDisplay.textContent = `R$ ${subtotalPecasValor.toFixed(2).replace('.', ',')}`;
         custoProgramacaoDisplay.textContent = `R$ ${custoProgramacaoValor.toFixed(2).replace('.', ',')}`;
 
-        // Calcula o valor total geral (SEM DESCONTO)
         const valorGeralTotal = subtotalPecasValor + custoProgramacaoValor;
-        ultimoPrecoTotalCalculado = valorGeralTotal; // Armazena para uso no pop-up/exportação
-        valorTotalCalculadoDisplay.textContent = `R$ ${valorGeralTotal.toFixed(2).replace('.', ',')}`; // Atualiza o display do valor total (subtotal)
+        ultimoPrecoTotalCalculado = valorGeralTotal;
+        valorTotalCalculadoDisplay.textContent = `R$ ${valorGeralTotal.toFixed(2).replace('.', ',')}`;
 
         // Lógica de Desconto Híbrido:
         let valorDesconto = 0;
         let percentualDesconto = parseFloat(percentualDescontoInput.value) || 0;
         let valorDescontoFixo = parseFloat(valorDescontoFixoInput.value) || 0;
 
-        // 1. Validação/Escolha do Desconto
         if (valorDescontoFixo > 0 && percentualDesconto > 0) {
-            // Se ambos forem preenchidos, prioriza um e zera o outro no display para evitar confusão.
-            // Aqui, priorizamos o valor fixo.
             percentualDescontoInput.value = '0';
             percentualDesconto = 0;
             displayMessage('Apenas um tipo de desconto (percentual ou fixo) pode ser aplicado. O desconto em R$ foi mantido.', 'info');
         } 
         
         if (valorDescontoFixo > 0) {
-            // Desconto em R$
-            valorDesconto = Math.min(valorDescontoFixo, valorGeralTotal); // Garante que o desconto não exceda o total
-            percentualDesconto = (valorDesconto / valorGeralTotal) * 100; // Calcula o % para exibição no pop-up
+            valorDesconto = Math.min(valorDescontoFixo, valorGeralTotal);
+            percentualDesconto = (valorDesconto / valorGeralTotal) * 100;
         } else if (percentualDesconto > 0) {
-            // Desconto em %
-            percentualDesconto = Math.min(percentualDesconto, 100); // Garante que o % não exceda 100
+            percentualDesconto = Math.min(percentualDesconto, 100);
             percentualDescontoInput.value = percentualDesconto; 
-            valorDesconto = valorGeralTotal * (percentualDesconto / 100); // Calcula o valor do desconto
-            valorDescontoFixoInput.value = valorDesconto.toFixed(2); // Atualiza o campo R$ com o valor calculado (apenas visual)
+            valorDesconto = valorGeralTotal * (percentualDesconto / 100);
+            valorDescontoFixoInput.value = valorDesconto.toFixed(2);
         } else {
             valorDescontoFixoInput.value = '0.00';
         }
 
         const valorFinalComDesconto = valorGeralTotal - valorDesconto;
         
-        ultimoValorDesconto = valorDesconto; // Armazena o valor do desconto em R$
-        ultimoPrecoFinalComDesconto = valorFinalComDesconto; // Armazena o valor final
+        ultimoValorDesconto = valorDesconto;
+        ultimoPrecoFinalComDesconto = valorFinalComDesconto;
 
-        // Atualiza o display do desconto aplicado e do valor final com desconto
         valorDescontoAplicadoDisplay.textContent = `R$ ${valorDesconto.toFixed(2).replace('.', ',')}`;
         valorTotalComDescontoDisplay.textContent = `R$ ${valorFinalComDesconto.toFixed(2).replace('.', ',')}`;
     }
@@ -291,24 +285,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- 4. Lógica do Botão "Gerar Orçamento (Nova Janela)" --------
 
     gerarOrcamentoBtn.addEventListener('click', function() {
-        // CORREÇÃO ESSENCIAL: Abrir a janela imediatamente para burlar o bloqueador
         const novaJanela = window.open('', '_blank', 'width=900,height=700,scrollbars=yes,resizable=yes');
         if (!novaJanela) {
             displayMessage('A nova janela foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.', 'error');
             return;
         }
 
-        const numeroOrcamento = numeroOrcamentoInput.value.trim(); // Pega o número do orçamento
+        const numeroOrcamento = numeroOrcamentoInput.value.trim();
         const nomeCliente = nomeClienteInput.value.trim();
         const dataOrcamento = dataOrcamentoInput.value;
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
         const custoHora = VALOR_CUSTO_FIXO;
         const dadosPecas = obterDadosTabela();
-        atualizarSubtotais(); // Garante que o último cálculo esteja atualizado
+        atualizarSubtotais();
 
-        // Validações antes de gerar o orçamento completo
         if (numeroOrcamento === '') {
-            novaJanela.close(); // Fecha a janela aberta se a validação falhar
+            novaJanela.close();
             displayMessage('Por favor, preencha o Número do Orçamento.', 'error');
             numeroOrcamentoInput.focus();
             return;
@@ -325,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tempoProgramacaoInput.focus();
             return;
         }
-        // Validações para a tabela: ao menos uma linha preenchida ou tempo de programação
+        
         const hasValidPecas = dadosPecas.some(item =>
             (parseFloat(item.quantidade) > 0 && parseFloat(item.tempoUnitario) > 0) || item.peca !== ''
         );
@@ -335,21 +327,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Variáveis de Totais Globais
         const precoTotalSemDesconto = ultimoPrecoTotalCalculado;
         const precoTotalFinal = ultimoPrecoFinalComDesconto; 
         const valorDesconto = ultimoValorDesconto;
         const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
-        // Pega o percentual real aplicado (calculado no atualizarSubtotais)
         const percentualDescontoAplicado = (valorDesconto / precoTotalSemDesconto) * 100;
 
-
-        // Formatação da data para exibição no pop-up (correção de fuso horário)
         const [anoData, mesData, diaData] = dataOrcamento.split('-').map(Number);
         const dataParaExibir = new Date(anoData, mesData - 1, diaData);
         const dataOrcamentoFormatada = dataParaExibir.toLocaleDateString('pt-BR');
 
-        // Geração do HTML da tabela para o pop-up
         let tabelaHTML = `
             <table class="orcamento-table">
                 <thead>
@@ -367,14 +354,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <tbody>
         `;
         dadosPecas.forEach(item => {
-            // Include only rows with relevant data in the budget HTML
             const numericQuantidade = parseFloat(item.quantidade) || 0;
             const numericLargura = parseFloat(item.largura) || 0;
             const numericAltura = parseFloat(item.altura) || 0;
             const numericTempoUnitario = parseFloat(item.tempoUnitario) || 0;
             const numericTempoTotal = numericQuantidade * numericTempoUnitario;
             const numericValorTotal = numericTempoTotal * VALOR_CUSTO_FIXO;
-
 
             if (numericQuantidade > 0 || item.peca !== '' || numericLargura > 0 || numericAltura > 0 || numericTempoUnitario > 0) {
                 tabelaHTML += `
@@ -396,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </table>
         `;
 
-        // Conteúdo HTML da nova janela (com estilos responsivos embutidos)
         const orcamentoHTML = `
             <!DOCTYPE html>
             <html lang="pt-BR">
@@ -410,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         margin: 20px;
                         color: #333;
                         line-height: 1.6;
-                        font-size: 16px; /* Tamanho da fonte base para responsividade */
+                        font-size: 16px;
                     }
                     .header {
                         text-align: center;
@@ -419,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         padding-bottom: 15px;
                     }
                     .header img {
-                        max-width: 90px; /* AJUSTADO: Logo principal menor no pop-up */
+                        max-width: 90px;
                         margin-bottom: 10px;
                     }
                     .header h1 {
@@ -427,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         font-size: 1.8em;
                         margin: 0;
                     }
-                    /* Estilo para as informações da empresa no pop-up */
                     .company-info-popup {
                         text-align: center;
                         margin-bottom: 20px;
@@ -456,15 +439,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         border-collapse: collapse;
                         margin: 20px 0;
                         font-size: 0.9em;
-                        display: block; /* Para permitir overflow-x */
-                        overflow-x: auto; /* Adiciona rolagem horizontal à tabela no pop-up */
-                        -webkit-overflow-scrolling: touch; /* Melhoria de rolagem para iOS */
+                        display: block;
+                        overflow-x: auto;
+                        -webkit-overflow-scrolling: touch;
                     }
                     .orcamento-table th, .orcamento-table td {
                         border: 1px solid #ddd;
                         padding: 8px;
                         text-align: center;
-                        white-space: nowrap; /* Evita quebra de linha em células */
+                        white-space: nowrap;
                     }
                     .orcamento-table th {
                         background-color: #f2f2f2;
@@ -491,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                          font-size: 1em;
                     }
                     .summary-section .discount-amount {
-                        color: #dc3545; /* Vermelho para desconto */
+                        color: #dc3545;
                     }
                     .summary-section .total-price {
                         font-size: 1.8em;
@@ -506,8 +489,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         font-size: 0.9em;
                         color: #777;
                     }
-
-                    /* Estilos para o botão de PDF e o rodapé de parceria no pop-up */
                     .pdf-button-container {
                         text-align: center;
                         margin-top: 30px;
@@ -515,7 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         padding-top: 15px;
                         border-top: 1px solid #eee;
                     }
-
                     .print-pdf-button {
                         background-color: #dc3545;
                         color: white;
@@ -526,11 +506,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         font-size: 1.1em;
                         transition: background-color 0.3s ease;
                     }
-
                     .print-pdf-button:hover {
                         background-color: #c82333;
                     }
-
                     .popup-footer-partnership {
                         text-align: center;
                         margin-top: 30px;
@@ -539,15 +517,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         font-size: 0.85em;
                         color: #6c757d;
                     }
-
                     .popup-gmobile-logo {
-                        max-width: 80px; /* AJUSTADO: Logo da Gmobile menor no pop-up */
+                        max-width: 80px;
                         height: auto;
                         display: block;
                         margin: 10px auto 0;
                     }
-
-                    /* Media Query para o Pop-up em telas menores (celular) */
                     @media (max-width: 600px) {
                         body {
                             margin: 10px;
@@ -557,9 +532,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             font-size: 1.5em;
                         }
                         .header img {
-                            max-width: 70px; /* AJUSTADO: Logo principal ainda menor em mobile no pop-up */
+                            max-width: 70px;
                         }
-                        /* Ajuste do tamanho da fonte para mobile no pop-up */
                         .company-info-popup {
                             font-size: 0.8em;
                         }
@@ -578,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             font-size: 1em;
                         }
                         .popup-gmobile-logo {
-                            max-width: 80px; /* AJUSTADO: Logo da Gmobile ainda menor em mobile no pop-up */
+                            max-width: 80px;
                         }
                         .summary-section .total-price {
                             font-size: 1.5em;
@@ -587,8 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             font-size: 0.8em;
                         }
                     }
-
-                    /* Estilos para Impressão (ocultam o botão de PDF na versão impressa) */
                     @media print {
                         .pdf-button-container {
                             display: none;
@@ -657,28 +629,22 @@ document.addEventListener('DOMContentLoaded', function() {
             </html>
         `;
 
-        // Escreve o conteúdo na janela aberta (isso só funciona se o window.open não foi bloqueado)
         novaJanela.document.write(orcamentoHTML);
         novaJanela.document.close();
-			
-		// Define o título da nova janela ANTES de imprimir
-        // Este título será usado como o nome de arquivo padrão ao salvar como PDF
         novaJanela.document.title = `USINFOCO_${numeroOrcamento.replace(/[^a-zA-Z0-9]/g, '')}_${nomeCliente.replace(/[^a-zA-Z0-9]/g, '')}`;	
-			
         novaJanela.focus();
     });
 
     // -------- 5. Lógica do Botão "Exportar para Excel" --------
 
     exportExcelBtn.addEventListener('click', function() {
-        const numeroOrcamento = numeroOrcamentoInput.value.trim(); // Pega o número do orçamento
+        const numeroOrcamento = numeroOrcamentoInput.value.trim();
         const nomeCliente = nomeClienteInput.value.trim();
         const dataOrcamento = dataOrcamentoInput.value;
         const tempoProgramacao = parseFloat(tempoProgramacaoInput.value) || 0;
         const custoHora = VALOR_CUSTO_FIXO;
         const dadosPecas = obterDadosTabela();
 
-        // Validações antes de exportar
         if (numeroOrcamento === '') {
             displayMessage('Por favor, preencha o Número do Orçamento antes de exportar.', 'error');
             numeroOrcamentoInput.focus();
@@ -698,38 +664,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         atualizarSubtotais();
-        // Variáveis de Totais Globais
         const precoTotalSemDesconto = ultimoPrecoTotalCalculado;
         const precoTotalFinal = ultimoPrecoFinalComDesconto; 
         const valorDesconto = ultimoValorDesconto;
         const custoProgramacaoValor = tempoProgramacao * VALOR_CUSTO_FIXO;
-        // Pega o percentual real aplicado
         const percentualDescontoAplicado = (valorDesconto / precoTotalSemDesconto) * 100;
 
-
-        // Preparar dados para a planilha
         const dadosPlanilha = [];
 
-        // Cabeçalho Principal com informações da empresa e número do orçamento
         dadosPlanilha.push(['ORÇAMENTO DE USINAGEM CNC']);
         dadosPlanilha.push([]);
         dadosPlanilha.push(['Endereço:', COMPANY_ADDRESS]);
         dadosPlanilha.push(['CNPJ:', COMPANY_CNPJ]);
         dadosPlanilha.push(['PIX:', COMPANY_PIX]);
-        dadosPlanilha.push([]); // Espaçamento
+        dadosPlanilha.push([]);
         dadosPlanilha.push(['Número do Orçamento:', numeroOrcamento]);
         dadosPlanilha.push(['Cliente:', nomeCliente]);
         dadosPlanilha.push(['Data do Orçamento:', new Date(dataOrcamento).toLocaleDateString('pt-BR')]);
         dadosPlanilha.push(['Tempo de Programação (Minuto):', tempoProgramacao.toFixed(2).replace('.', ','), 'Custo Programação (R$):', custoProgramacaoValor.toFixed(2).replace('.', ',')]);
         dadosPlanilha.push([]);
 
-        // Cabeçalho da Tabela de Peças
         dadosPlanilha.push([
             'Qtd.', 'Peça', 'Largura (mm)', 'Altura (mm)',
             'Tempo Unit. (min)', 'Valor Unit. (R$)', 'Tempo Total (min)', 'Valor Total (R$)'
         ]);
 
-        // Dados da Tabela de Peças
         dadosPecas.forEach(item => {
             const numericQuantidade = parseFloat(item.quantidade) || 0;
             const numericTempoUnitario = parseFloat(item.tempoUnitario) || 0;
@@ -738,45 +697,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (numericQuantidade > 0 || item.peca !== '' || parseFloat(item.largura) > 0 || parseFloat(item.altura) > 0 || numericTempoUnitario > 0) {
                 dadosPlanilha.push([
-                    item.quantidade, // Keep as string
+                    item.quantidade,
                     item.peca,
-                    item.largura, // Keep as string
-                    item.altura, // Keep as string
-                    item.tempoUnitario, // Keep as string
+                    item.largura,
+                    item.altura,
+                    item.tempoUnitario,
                     item.valorUnitario,
-                    numericTempoTotal, // This calculation uses numeric values
-                    numericValorTotal // This calculation uses numeric values
+                    numericTempoTotal,
+                    numericValorTotal
                 ]);
             }
         });
         dadosPlanilha.push([]);
 
-        // Totais
         dadosPlanilha.push(['', '', '', '', '', '', 'SUBTOTAL PEÇAS (R$):', dadosPecas.reduce((acc, item) => acc + ((parseFloat(item.quantidade) || 0) * (parseFloat(item.tempoUnitario) || 0) * VALOR_CUSTO_FIXO), 0)]);
         dadosPlanilha.push(['', '', '', '', '', '', 'CUSTO PROGRAMAÇÃO (R$):', custoProgramacaoValor]);
         dadosPlanilha.push(['', '', '', '', '', '', 'TOTAL SEM DESCONTO (R$):', precoTotalSemDesconto]);
         dadosPlanilha.push(['', '', '', '', '', '', `DESCONTO (${percentualDescontoAplicado.toFixed(2).replace('.', ',')}%) (R$):`, valorDesconto]);
         dadosPlanilha.push(['', '', '', '', '', '', 'VALOR TOTAL FINAL (R$):', precoTotalFinal]);
 
-
-        // Criação da planilha e pasta de trabalho
         const ws = XLSX.utils.aoa_to_sheet(dadosPlanilha);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Orçamento CNC');
 
-        // Definindo larguras das colunas (opcional, mas melhora a visualização)
         ws['!cols'] = [
-            { wch: 8 }, // Qtd.
-            { wch: 20 }, // Peça
-            { wch: 12 }, // Largura
-            { wch: 12 }, // Altura
-            { wch: 15 }, // Tempo Unit.
-            { wch: 15 }, // Valor Unit.
-            { wch: 15 }, // Tempo Total
-            { wch: 15 }  // Valor Total
+            { wch: 8 },
+            { wch: 20 },
+            { wch: 12 },
+            { wch: 12 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 }
         ];
 
-        // Exporta o arquivo
         const nomeArquivo = `Orcamento_CNC_${nomeCliente.replace(/\s/g, '_')}_${dataOrcamento}.xlsx`;
         XLSX.writeFile(wb, nomeArquivo);
     });
@@ -784,5 +738,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // -------- Inicializar o App --------
     inicializarApp();
 });
-
-
